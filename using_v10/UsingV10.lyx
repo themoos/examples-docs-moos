@@ -2618,6 +2618,328 @@ Register(
 \end_layout
 
 \begin_layout Subsection
+Common Command Line Interface 
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+MOOSApp 
+\family default
+now supports a whole set of command line options which, by making a very
+ small change to your code will make all your programs which use MOOSApp
+ respond in the same way 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+sadly this does require a code change as there is no other way to get command
+ line parameters in 
+\family typewriter
+CMOOSApp..
+\end_layout
+
+\end_inset
+
+.
+ The upgrade is effected by invoking a new version of 
+\family typewriter
+CMOOSApp::Run
+\family default
+ which takes argc and argv as parameters:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small},language={C++}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+bool Run(const std::string &  sName,const std::string & sMissionFile, int
+ argc, char * argv[]);
+\end_layout
+
+\begin_layout Plain Layout
+
+bool Run( const std::string &,int argc, char * argv[]); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This in turn populates a member variable within 
+\family typewriter
+CMOOSApp
+\family default
+ called 
+\family typewriter
+m_CommandLineParser 
+\family default
+which is used internally to parse the following commandline variables and
+ flags.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+variables:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_app_name=<string>    : name of application
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_name=<string>        : name with which to register with MOOSDB  
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_file=<string>        : name of configuration file   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_host=<string>        : address of machine hosting MOOSDB   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_port=<number>        : port on which DB is listening    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_apptick=<number>     : frequency of application (if relevant)   
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_commstick=<number>   : frequency of comms (if relevant)    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_iterate_Mode=<0,1,2> : set app iterate mode 
+\end_layout
+
+\begin_layout Plain Layout
+
+flags:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_iterate_no_comms     : enable iterate without comms    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_filter_command       : enable command message filtering    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_no_sort_mail         : don't sort mail by time    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_no_comms             : don't start communications    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_quit_on_iterate_fail : quit if iterate fails 
+\end_layout
+
+\begin_layout Plain Layout
+
+help:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_print_example        : print an example configuration block    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_print_interface      : describe the interface (subscriptions/pubs)
+   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_print_version        : print the version of moos in play    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_help                 : print this message   
+\end_layout
+
+\begin_layout Plain Layout
+
+--help                      : print this message
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+To enable common command line parsing call 
+\family typewriter
+CMOOSApp::Run(moos_name,argc,argv)
+\family default
+ or a variant when you start a 
+\family typewriter
+MOOSApp
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+New Command Line Related Functions to Overload
+\end_layout
+
+\begin_layout Standard
+MOOS-V10 adds new virtual functions to 
+\family typewriter
+CMOOSApp
+\family default
+ which can be overloaded to process additional command line parameters if
+ argc, and argv have been passed to your 
+\family typewriter
+CMOOSApp
+\family default
+ derived class.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnProcessCommandLine() 
+\family default
+is called so you can do additional command line parsing
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnPrintExampleAndExit()
+\family default
+ is called when 
+\family typewriter
+--moos_print_example
+\family default
+ is present on the command line.
+ The intent is you use this function to print out an example configuration
+ file block.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnPrintInterfaceAndExit()
+\family default
+ is called when 
+\family typewriter
+--moos_print_interface
+\family default
+ is present on the command line.
+ The intent is you use this function to print out details of the processes
+ subscriptions and publications.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnPrintHelpAndExit() 
+\family default
+is called when --moos_help or --help is present on the command line.
+ The intent here is you print out help for additional command line parameters
+ here.
+\end_layout
+
+\begin_layout Subsection
 MOOSDB Interface Improvements
 \end_layout
 

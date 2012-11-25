@@ -237,6 +237,25 @@ This affords a drastically decreased latency between data being published
  and clients receiving it.
 \end_layout
 
+\begin_layout Itemize
+
+\series bold
+Standard Command Line Swiches
+\series default
+ All MOOS applications can with a trivial code change be configured to handle
+ and interpret standard command line parameters.
+ Additionally a tool is provided to ease parsing command line options.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+A new build system 
+\series default
+is provided which via CMake make linking against MOOS (and the right version)
+ easy.
+\end_layout
+
 \begin_layout Subsection*
 Structural Headlines
 \end_layout
@@ -259,7 +278,7 @@ texttt{pLogger}
 
 \end_inset
 
-), and grapical tools all now live in seperate projects.
+), and graphical tools all now live in seperate projects.
  For example, it is now possible to download only the communications layer
  and work just with that.
 \end_layout
@@ -2756,13 +2775,19 @@ variables:
 
 \begin_layout Plain Layout
 
---moos_apptick=<number>     : frequency of application (if relevant)   
+--moos_app_tick=<number>    : frequency of application (if relevant)   
  
 \end_layout
 
 \begin_layout Plain Layout
 
---moos_commstick=<number>   : frequency of comms (if relevant)    
+--moos_max_app_tick=<number>: max frequency of application (if relevant)
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_comms_tick=<number>  : frequency of comms (if relevant)    
 \end_layout
 
 \begin_layout Plain Layout
@@ -2823,12 +2848,12 @@ help:
 
 \begin_layout Plain Layout
 
---moos_help                 : print this message   
+--moos_help                 : print help on moos switches   
 \end_layout
 
 \begin_layout Plain Layout
 
---help                      : print this message
+--help                      : print help on moos messages and custom help
 \end_layout
 
 \end_inset
@@ -2864,7 +2889,7 @@ Tip:
 \series default
 To enable common command line parsing call 
 \family typewriter
-CMOOSApp::Run(moos_name,argc,argv)
+CMOOSApp::Run(moos_name,mission_file,argc,argv)
 \family default
  or a variant when you start a 
 \family typewriter
@@ -2934,9 +2959,17 @@ OnPrintInterfaceAndExit()
 \family typewriter
 OnPrintHelpAndExit() 
 \family default
-is called when --moos_help or --help is present on the command line.
- The intent here is you print out help for additional command line parameters
- here.
+is called when 
+\family typewriter
+--moos_help
+\family default
+ or
+\family typewriter
+ --help
+\family default
+ is present on the command line.
+ The intent here is that you print out help for additional command line
+ parameters inside this function.
 \end_layout
 
 \begin_layout Subsection
@@ -3555,7 +3588,7 @@ ON
 \end_layout
 
 \begin_layout Section
-Bench Marks
+Bench Marks and Testing Tools
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Bench-Marks"
@@ -3566,7 +3599,15 @@ name "sec:Bench-Marks"
 \end_layout
 
 \begin_layout Subsection
-Using uDBAsyncTest
+Testing with uDBClientTest
+\end_layout
+
+\begin_layout Standard
+Sometimes its attractive to be able to simply 
+\end_layout
+
+\begin_layout Subsection
+Profiling with uDBAsyncTest
 \end_layout
 
 \begin_layout Standard
@@ -3698,7 +3739,11 @@ where
  .
  The test can be run for a configurable nuber of seconds after which histograms
  of performance for each kind of client can be produced.
- The options for uDBAysncTest are below.
+ The options for 
+\family typewriter
+uDBAsyncTest
+\family default
+ are below.
 \end_layout
 
 \begin_layout Standard
@@ -3717,26 +3762,22 @@ V10 performance and compatibility testing
 
 \begin_layout Plain Layout
 
-  -p (--test_period)                : test period in seconds (20 seconds
- default)
+  -p              : test period in seconds (20 seconds default)
 \end_layout
 
 \begin_layout Plain Layout
 
-  -m (--message_period)             : send test data every m milliseconds
- (default 100 ms)
+  -m              : send test data every m milliseconds (default 100 ms)
 \end_layout
 
 \begin_layout Plain Layout
 
-  -c (--num_clients)                : number of clients to instantiate (default
- 40)
+  -c              : number of clients to instantiate (default 40)
 \end_layout
 
 \begin_layout Plain Layout
 
-  -s (--payload_size)               : size of data to send default (default
- 1024 bytes)
+  -s              : size of data to send default (default 1024 bytes)
 \end_layout
 
 \begin_layout Plain Layout
@@ -3756,7 +3797,7 @@ Example Usage:  test for 15 seconds with 20 clients and sending 100K every
 
 \begin_layout Plain Layout
 
-	./uDBAysncTest  -p 15 -c 20 -m 50 -s 100000
+	./uDBAsyncTest  -p=15 -c=20 -m=50 -s=100000
 \end_layout
 
 \begin_layout Plain Layout
@@ -3788,22 +3829,22 @@ status open
 
 \begin_layout Plain Layout
 
-./uDBAysncTest  -p 20 -c 5 -m 50 -s 1000
+./uDBAsyncTest  -p=20 -c=5 -m=50 -s=1000
 \end_layout
 
 \begin_layout Plain Layout
 
-./uDBAysncTest  -p 20 -c 5 -m 50 -s 10000
+./uDBAsyncTest  -p=20 -c=5 -m=50 -s=10000
 \end_layout
 
 \begin_layout Plain Layout
 
-./uDBAysncTest  -p 20 -c 5 -m 50 -s 10000
+./uDBAsyncTest  -p=20 -c=5 -m=50 -s=10000
 \end_layout
 
 \begin_layout Plain Layout
 
-./uDBAysncTest  -p 20 -c 5 -m 50 -s 1000000
+./uDBAsyncTest  -p=20 -c=5 -m=50 -s=1000000
 \end_layout
 
 \end_inset

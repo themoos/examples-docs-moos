@@ -35,6 +35,20 @@ public:
 
 		return true;
 	}
+	void OnPrintHelpAndExit()
+	{
+		PrintDefaultCommandLineSwitches();
+		std::cout<<"\napplication specific help:\n";
+		std::cout<<"  -s            : be a video server grabs and sends images (no window)\n";
+		exit(0);
+	}
+	void OnPrintExampleAndExit()
+	{
+		std::cout<<" ./video_share -s    \n";
+		std::cout<<" and on another terminal..\n";
+		std::cout<<" ./video_share       \n";
+		exit(0);
+	}
 
 	bool OnProcessCommandLine()
 	{

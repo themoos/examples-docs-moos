@@ -11,7 +11,7 @@ find_package(MOOS 10)
 
 find_package( OpenCV )
 
-set(EXECNAME camera_example)
+set(EXECNAME video_share)
 
 #what files are needed?
 set(SRCS CameraExample.cpp)

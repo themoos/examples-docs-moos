@@ -2637,7 +2637,14 @@ Register(
 \end_layout
 
 \begin_layout Subsection
-Common Command Line Interface 
+Common Command Line Interface
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Common-Command-Line"
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2982,8 +2989,12 @@ Command Line
 
 \begin_layout Standard
 Its pretty dull to only be able to configure processes from a script.
- MOOSDB now supports a better command line interface which allows you to
- set the port it is serving on and various other configurations.
+ 
+\family typewriter
+MOOSDB
+\family default
+ now supports a better command line interface which allows you to set the
+ port it is serving on and various other configurations.
  All accessed via 
 \family typewriter
 ./MOOSDB --help
@@ -3603,7 +3614,109 @@ Testing with uDBClientTest
 \end_layout
 
 \begin_layout Standard
-Sometimes its attractive to be able to simply 
+Sometimes its attractive to be able to simply to fire up a program from
+ the command line that subscribes to an publishes messages of your choosing
+ - just to test the MOOS Communications facilities and explore performance.
+ There is a tool called 
+\family typewriter
+uDBTestClient 
+\family default
+which is designed to achieve just this and it also allows you to simulate
+ apllications crashing or operating with high latency networks.
+ It is entirely configurable from the command line and has the following
+ options (in addition to the standard MOOS ones described in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Common-Command-Line"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Publication and Subscription  settings:   
+\end_layout
+
+\begin_layout Plain Layout
+
+-s=<string>            : list of subscriptions in form var_name@period eg
+ -s=x,y,z 
+\end_layout
+
+\begin_layout Plain Layout
+
+-w=<string>            : list of wildcard subscriptions in form var_pattern:app_
+patterd@period eg -w=x*:*@0.1,*:GPS:0.0 z   
+\end_layout
+
+\begin_layout Plain Layout
+
+-p=<string>            : list of publications in form var_name[:optional_binary_
+size]@period eg -p=x@0.5,y:2048@2.0   
+\end_layout
+
+\begin_layout Plain Layout
+
+--latency              : show latency (time between posting and receiving)
+   
+\end_layout
+
+\begin_layout Plain Layout
+
+--verbose              : verbose output
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Network failure simulation:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--simulate_network_failure=<numeric>   : enable simulation of network/app
+ failure   
+\end_layout
+
+\begin_layout Plain Layout
+
+--network_failure_prob=<numeric>       : probability of each DB interaction
+ having network failure [0.1]   
+\end_layout
+
+\begin_layout Plain Layout
+
+--network_failure_time=<numeric>       : duration of network failure [3s]
+   
+\end_layout
+
+\begin_layout Plain Layout
+
+--application_failure_prob=<numeric>   : probability of application failing
+ during DB-communication [0]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So imagine we
 \end_layout
 
 \begin_layout Subsection

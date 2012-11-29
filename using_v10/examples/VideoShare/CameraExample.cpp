@@ -1,22 +1,18 @@
 #include "opencv2/opencv.hpp"
 #include "MOOS/libMOOS/App/MOOSApp.h"
-#include "MOOS/libMOOS/Thirdparty/getpot/getpot.h"
-
 
 class CameraApp : public CMOOSApp
 {
 public:
 	bool Iterate()
 	{
-		if(server_)
-		{
+		if(server_){
 			vc_>>capture_frame_;
 			cv::cvtColor(capture_frame_, bw_image_, CV_BGR2GRAY);
 			cv::resize(bw_image_, image_, image_.size(), 0, 0, cv::INTER_NEAREST);
 			Notify("Image",(void*)image_.data,image_.size().area(),MOOSLocalTime());
 		}
-		else
-		{
+		else{
 	        cv::imshow("display", image_);
 	        cv::waitKey(10);
 		}
@@ -25,18 +21,15 @@ public:
 	bool OnStartUp()
 	{
 		SetAppFreq(20,400);
-
 		SetIterateMode(COMMS_DRIVEN_ITERATE_AND_MAIL);
 
 		image_ = cv::Mat(378,512,CV_8UC1);
 
-		if(server_)
-		{
+		if(server_){
 			if(!vc_.open(0))
 				return false;
 		}
-		else
-		{
+		else{
 		    cv::namedWindow("display",1);
 		}
 
@@ -52,10 +45,8 @@ public:
 	bool OnNewMail(MOOSMSG_LIST & mail)
 	{
 		MOOSMSG_LIST::iterator q;
-		for(q = mail.begin();q!=mail.end();q++)
-		{
-			if(q->IsName("Image"))
-			{
+		for(q = mail.begin();q!=mail.end();q++){
+			if(q->IsName("Image")){
 				std::cerr<<"bytes: "<<q->GetBinaryDataSize()<<" latency "<<
 						std::setprecision(3)<<(MOOSLocalTime()-q->GetTime())*1e3<<" ms\r";
 
@@ -80,9 +71,15 @@ protected:
 };
 int main(int argc, char* argv[])
 {
-	GetPot cl(argc,argv);
+	//here we do some command line parsing...
+	MOOS::CommandLineParser P(argc,argv);
+	//mission file could be first free parameter
+	std::string mission_file = P.GetFreeParameter(0, "Mission.moos");
+	//app name can be the  second free parameter
+	std::string app_name = P.GetFreeParameter(1, "CameraTest");
+
     CameraApp App;
-    App.SetCommandLineParameters(argc,argv);
-    App.Run("CameraTest");
+	App.Run(app_name,mission_file,argc,argv);
+
     return 0;
 }

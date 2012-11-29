@@ -1,14 +1,10 @@
-#include "MOOS/libMOOS/App/MOOSApp.h"
-#include "MOOS/libMOOS/Thirdparty/getpot/getpot.h"
-
 /*
- * ExampleB.cpp
- *
- *  Created on: Nov 11, 2012
- *      Author: pnewman
+ * simple MOOSApp example
  */
 
-class ExampleBApp : public CMOOSApp
+#include "MOOS/libMOOS/App/MOOSApp.h"
+
+class ExampleApp : public CMOOSApp
 {
 	bool OnNewMail(MOOSMSG_LIST & Mail)
 	{
@@ -33,15 +29,17 @@ class ExampleBApp : public CMOOSApp
 
 int main(int argc, char * argv[])
 {
-	//understand the command line
-	GetPot cl(argc,argv);
-	std::string db_host = cl.follow("localhost",2,"-s","--server");
-	int db_port = cl.follow(9000,2,"-p","--port");
-	std::string my_name = cl.follow("exampleA",2,"-n","--name");
+	//here we do some command line parsing...
+	MOOS::CommandLineParser P(argc,argv);
+	//mission file could be first free parameter
+	std::string mission_file = P.GetFreeParameter(0, "Mission.moos");
 
-	ExampleBApp App;
+	//app name can be the  second free parameter
+	std::string app_name = P.GetFreeParameter(1, "ExampleApp");
 
-	App.Run(my_name.c_str(),"Mission.moos");
+	ExampleApp App;
+
+	App.Run(app_name,mission_file,argc,argv);
 
 	return 0;
 }

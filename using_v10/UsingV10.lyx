@@ -3610,7 +3610,9 @@ name "sec:Bench-Marks"
 \end_layout
 
 \begin_layout Subsection
-Testing with uDBClientTest
+Testing with 
+\family typewriter
+moos_test
 \end_layout
 
 \begin_layout Standard
@@ -3619,7 +3621,7 @@ Sometimes its attractive to be able to simply to fire up a program from
  - just to test the MOOS Communications facilities and explore performance.
  There is a tool called 
 \family typewriter
-uDBTestClient 
+moos_test 
 \family default
 which is designed to achieve just this and it also allows you to simulate
  apllications crashing or operating with high latency networks.
@@ -3631,7 +3633,8 @@ reference "sub:Common-Command-Line"
 
 \end_inset
 
-.
+ which you use to set MOOS parameters to something other than their default
+ value).
 \end_layout
 
 \begin_layout Standard
@@ -3653,7 +3656,7 @@ Publication and Subscription  settings:
 \begin_layout Plain Layout
 
 -w=<string>            : list of wildcard subscriptions in form var_pattern:app_
-patterd@period eg -w=x*:*@0.1,*:GPS:0.0 z   
+patterd@period eg -w=x*:*@0.1,*:GPS@0.0 z   
 \end_layout
 
 \begin_layout Plain Layout
@@ -3716,11 +3719,229 @@ Network failure simulation:
 \end_layout
 
 \begin_layout Standard
-So imagine we
+Some examples are probably useful at this point.
+ So if we wanted to send the variable 
+\family typewriter
+X 
+\family default
+at 20Hz we would type:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./moos_test -p=X@20 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and in this case X would be a numeric (MOOS_DOUBLE) variable.
+ Imagine now we wanted to try sending binary data.
+ We would be compelled to write:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./moos_test -p=X@20,Y:10000@15 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and this would write Y as 10K of binary data a 15 Hz.
+ We can also subscribe to data
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./moos_test -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which subscribes for every issue of X (which we are publishing ourself!)
+ and also Z at to 8 Hz.
+ The verbose simply adds some printing so you can check progress.
+ You can of course also access the wildcard subscription service offered
+ by MOOS 10.
+ This is done via the 
+\family typewriter
+-w
+\family default
+ switch.
+ For example
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./moos_test -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose -w='*:ProcA@0'
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+listens dows all the above and subscribes to all messages from a process
+ called 
+\family typewriter
+\series bold
+ProcA
+\family default
+\series default
+.
+ Note the use of the single quotation to stop the shell interpreting the
+ wilcard '*'.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+you can use 
+\family typewriter
+moos_test
+\family default
+ to watch all MOOS traffic try 
+\family typewriter
+./moos_test -w='*:*@0' --verbose 
+\family default
+to see everything or 
+\family typewriter
+./moos_test -w='*:ProcA@1' 
+\family default
+to see everything from 
+\family typewriter
+ProcA
+\family default
+ at 1Hz.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Profiling with uDBAsyncTest
+Profiling with 
+\family typewriter
+async_test
 \end_layout
 
 \begin_layout Standard
@@ -3736,7 +3957,11 @@ you will find an executable called
 uDBAsyncTest 
 \family default
 which can be used to do some benchmarking.
- uDBAsyncTest instantiates a configurable number 
+ The program 
+\family typewriter
+async_test
+\family default
+ instantiates a configurable number 
 \begin_inset Formula $2N$
 \end_inset
 
@@ -3850,7 +4075,7 @@ where
 \end_inset
 
  .
- The test can be run for a configurable nuber of seconds after which histograms
+ The test can be run for a configurable number of seconds after which histograms
  of performance for each kind of client can be produced.
  The options for 
 \family typewriter
@@ -3942,22 +4167,22 @@ status open
 
 \begin_layout Plain Layout
 
-./uDBAsyncTest  -p=20 -c=5 -m=50 -s=1000
+./aysnc_test  -p=20 -c=5 -m=50 -s=1000
 \end_layout
 
 \begin_layout Plain Layout
 
-./uDBAsyncTest  -p=20 -c=5 -m=50 -s=10000
+./aysnc_test  -p=20 -c=5 -m=50 -s=10000
 \end_layout
 
 \begin_layout Plain Layout
 
-./uDBAsyncTest  -p=20 -c=5 -m=50 -s=10000
+./aysnc_test  -p=20 -c=5 -m=50 -s=10000
 \end_layout
 
 \begin_layout Plain Layout
 
-./uDBAsyncTest  -p=20 -c=5 -m=50 -s=1000000
+./aysnc_test  -p=20 -c=5 -m=50 -s=1000000
 \end_layout
 
 \end_inset
@@ -3976,7 +4201,11 @@ MOOSDB
 \family default
 was on the same machine as .
 \family typewriter
-/uDBAsyncTest 
+/
+\family default
+aysnc_test
+\family typewriter
+ 
 \family default
 which means we are testing logic speed not network speed.
  The results are gathered on a 2.2GHz Intel Core i7 Mac book Pro running

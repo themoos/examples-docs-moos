@@ -108,7 +108,46 @@ language=c++
 \begin_body
 
 \begin_layout Title
-MOOS Communications V10
+A Guide to using MOOS-V10 Communications 
+\end_layout
+
+\begin_layout Author
+Paul Newman, University of Oxford
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/MOOSV-10-256.pdf
+	width 3cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{2cm}
+\end_layout
+
+\end_inset
+
+....ten years on
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -120,14 +159,22 @@ LatexCommand tableofcontents
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
-Headlines
+Headlines - What's New?
 \end_layout
 
 \begin_layout Standard
 MOOS Version 10 is a major new release of MOOS.
- It incorporates many changes that improve its performance and answer to
- requests made by the user community.
+ It comes just over 10 years after MOOS was first written and it incorporates
+ many changes that improve its performance and answer to requests made by
+ the user community.
  This document sets out the features, changes and their implications on
  users of the communications API of MOOS.
  
@@ -140,13 +187,13 @@ Functional Headlines
 \begin_layout Itemize
 
 \series bold
-Multithreaded Design
+Multithreaded design
 \series default
  The 
 \family typewriter
 MOOSDB
 \family default
- now offers improved resiliance when working with clients which reside at
+ now offers improved resilience when working with clients which reside at
  the end of a high latency or low bandwidth link.
  Each client is now furnished with its own thread within the DB which allows
  each client to take as long as it needs to complete and 
@@ -165,7 +212,7 @@ without holding up the interactions of other clients.
 \begin_layout Itemize
 
 \series bold
-Wildcard Subscriptions
+Wildcard subscriptions
 \series default
  The 
 \family typewriter
@@ -212,9 +259,9 @@ K
 \begin_layout Itemize
 
 \series bold
-Reduced Latency
+Low latency
 \series default
- Aysnchronous communications are now supported via an upgraded 
+ Asynchronous communications are now supported via an upgraded 
 \family typewriter
 MOOSDB
 \family default
@@ -240,11 +287,27 @@ This affords a drastically decreased latency between data being published
 \begin_layout Itemize
 
 \series bold
-Standard Command Line Swiches
+Configurable behaviour
+\series default
+ in the way CMOOSApp handles mail.
+ You can have mail handled pretty much as soon as it comes in.
+ If you are using the low level comms object 
+\family typewriter
+MOOSAsyncCommClient
+\family default
+ you can have a call back handled the instant mail arrives.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Standard Command Line Switches
 \series default
  All MOOS applications can with a trivial code change be configured to handle
  and interpret standard command line parameters.
- Additionally a tool is provided to ease parsing command line options.
+ Additionally, a tool is provided to ease parsing command line options.
+ CMOOSApp has new hooks to support and encourage the writing of user help
+ and example configurations which can be printed to stdio.
 \end_layout
 
 \begin_layout Itemize
@@ -256,6 +319,22 @@ is provided which via CMake make linking against MOOS (and the right version)
  easy.
 \end_layout
 
+\begin_layout Itemize
+
+\series bold
+New testing
+\series default
+ command line programs which can easily be used to test MOOS communications
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Live diagnostics
+\series default
+ from the MOOSDB are avaiable over udp
+\end_layout
+
 \begin_layout Subsection*
 Structural Headlines
 \end_layout
@@ -265,7 +344,7 @@ Structural Headlines
 \series bold
 Fission into smaller, neater delineated code trees:
 \series default
- The communication layer, utilty applications (like 
+ The communication layer, utility applications (like 
 \begin_inset ERT
 status open
 
@@ -278,7 +357,11 @@ texttt{pLogger}
 
 \end_inset
 
-), and graphical tools all now live in seperate projects.
+), and graphical tools all now live in 
+\lang british
+separate
+\lang english
+ projects.
  For example, it is now possible to download only the communications layer
  and work just with that.
 \end_layout
@@ -304,7 +387,11 @@ MOOSLib
 \begin_layout Itemize
 
 \series bold
-A rationalised header file structure:
+A 
+\lang british
+rationalised
+\lang english
+ header file structure:
 \series default
  The header structure for commonly used files has changed to reflect this
  (but a backwards compatibility mode is provided so users can in the first
@@ -316,13 +403,13 @@ Structural Changes
 \end_layout
 
 \begin_layout Subsection
-Seperate Projects
+Separate Projects
 \end_layout
 
 \begin_layout Standard
 Pre version 10, the MOOS project was an ugly mash-up of source code which
  covered a strange span of functionality.
- This belied its martime roots- it included things like 
+ This belied its Maritime roots- it included things like 
 \family typewriter
 iINS 
 \family default
@@ -337,7 +424,7 @@ and pNav
 \family typewriter
 core-moos
 \family default
- library which only contains communication and domain neutral basic utiltiies.
+ library which only contains communication and domain neutral basic utilities.
  This project is the sole focus of this document.
 \end_layout
 
@@ -346,7 +433,7 @@ Library Structure and Header Files
 \end_layout
 
 \begin_layout Standard
-The classes that inplement the communications and application management
+The classes that implement the communications and application management
  (for example 
 \family typewriter
 CMOOSApp) 
@@ -554,7 +641,7 @@ Ethos
 \end_layout
 
 \begin_layout Subsubsection
-No code change
+No code change required
 \end_layout
 
 \begin_layout Standard
@@ -568,10 +655,13 @@ A lot of effort has been taken to make the users transition to MOOS V10
 CMake
 \family default
  build system.
+ Of course good citizens would probably be uncomfortable with living a legacy
+ interface and in time will want to upgrade.
+ However the point is you can get started with MOOS-V10 for zero overhead.
 \end_layout
 
 \begin_layout Subsubsection
-Hetereogenous Systems
+Backward Compatibility (Mixed Systems)
 \end_layout
 
 \begin_layout Standard
@@ -589,14 +679,14 @@ in safe mode in which it reverts to running the pre-V10 source code.
 \end_layout
 
 \begin_layout Subsection
-Building V
+Building V10 
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Building-V10"
 
 \end_inset
 
-10
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -604,7 +694,26 @@ The quickest way
 \end_layout
 
 \begin_layout Standard
-Checkout a clean version of MOOS V10:
+We shall begin where we should and check out a version of MOOS-V10 from
+ a git repos.
+ We will follow good practice and do an out of place build - the source
+ code will go in 
+\begin_inset Quotes eld
+\end_inset
+
+src
+\begin_inset Quotes erd
+\end_inset
+
+ and we will build in 
+\begin_inset Quotes eld
+\end_inset
+
+build
+\begin_inset Quotes erd
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -666,16 +775,16 @@ reference "fig:The-default-build"
 
  (note some of the entries are platform dependent so don't worry if what
  you see is not identical to this).
- If you simply want to link you existing code against MOOS V10 without needing
- to worry about the new header file structure then you will need to turn
- on 
+ If you simply want to link your existing code against MOOS V10 without
+ needing to worry about the new header file structure then you will need
+ to turn on 
 \family typewriter
 ENABLE_V10_COMPATIBILITY.
  
 \family default
 This switch adds an additional set of include path to those exported by
  the project, which have the same structure as those present in previous
- versions of MOOS.
+ (now legacy) versions of MOOS.
  If you 
 \begin_inset Quotes eld
 \end_inset
@@ -765,7 +874,9 @@ name "fig:The-default-build"
 
 \end_inset
 
-The default build screen for MOOS V10
+The default build screen for MOOS V10.
+ Note that by default USE_ASYNC_COMMS is off.
+ If you want really fast communications you should enable this.
 \end_layout
 
 \end_inset
@@ -813,9 +924,13 @@ lib.
 \series default
 In lib you will see 
 \family typewriter
-libMOOS
+libMOOS.a
 \family default
- and in bin you will find the newly created 
+ and in 
+\family typewriter
+bin
+\family default
+ you will find the newly created 
 \family typewriter
 MOOSDB.
 
@@ -829,18 +944,19 @@ reference "fig:running-the-new-db"
 \end_inset
 
 .
- You should be abl to use this 
+ You should be able to use this 
 \family typewriter
 MOOSDB
 \family default
  to manage all communications with any existing MOOS applications you have
  lying around - you should not have to upgrade them.
- MOOS V10 is backward compatible.
- You are probably wondering if just running this new DB by itselt buys you
+ Again, at the risk of labouring a point, MOOS-V10 is backwardly compatible
+ in many senses.
+ You are probably wondering if just running this new DB by itself buys you
  anything.
- The answer is yes.
- Each client has its own thread so if you have dodgey comms between one
- client and the 
+ The answer is yes, it does.
+ Each client now has its own thread so if you have dodgey comms between
+ one client and the 
 \family typewriter
 MOOSDB 
 \family default
@@ -849,7 +965,22 @@ this
  
 \family default
 ne'er-do-well client will not interfere with other client DB interactions
- - it won;t be able to hold them up.
+ - it won't be able to hold them up
+\backslash
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+this was a big annoyance in earlier versions.
+ There were occasions in which a dodgey wireless connection between a client
+ and a DB causes all other clients connections to suffer.
+ Misery
+\end_layout
+
+\end_inset
+
+.
 \begin_inset ERT
 status open
 
@@ -879,7 +1010,7 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -890,8 +1021,12 @@ you can use the V10
 \family typewriter
 MOOSDB
 \family default
- with old MOOS applications - you don't need to recompile them.
- V10 is backawards compatible.
+ with old MOOS applications - you don't 
+\shape italic
+have
+\shape default
+ to recompile them.
+ V10 is backwards compatible.
 \end_layout
 
 \end_inset
@@ -965,12 +1100,12 @@ Changing
 \end_layout
 
 \begin_layout Standard
-If you are prepared to invest 30 minutes in commiting to the new MOOS V10
+If you are prepared to invest 30 minutes in committing to the new MOOS V10
  project structure then this section tells you what to do.
  If you are as yet unsure if you want to upgrade, then don't bother simply
  use the 
 \family typewriter
-ENABLE_V10_COMPATIBILTY 
+ENABLE_V10_COMPATIBILITY 
 \family default
 option in CMake - this allows you to simply revert to old versions of MOOS
  without lifting a finger.
@@ -1003,7 +1138,7 @@ MOOS/libMOOS/Comms/MOOSCommClient.h
 .
  
 \family default
-The following table wil help you figure out how to include an particular
+The following table will help you figure out how to include an particular
  header.
 \end_layout
 
@@ -1182,7 +1317,7 @@ MOOS/libMOOS/MOOSLib.h
 \end_layout
 
 \begin_layout Subsection
-Importing and Building Against MV10
+Importing and Building Against MOOS-V10
 \end_layout
 
 \begin_layout Standard
@@ -1258,7 +1393,7 @@ libMOOS
 \family typewriter
 MOOS_DEPEND_LIBRARIES 
 \family default
-This contains the absolute paths for the libaries MOOS depends on (should
+This contains the absolute paths for the libraries MOOS depends on (should
  be empty)
 \end_layout
 
@@ -1279,7 +1414,7 @@ CMakeLists.txt
 \series default
 example_moos 
 \family default
-, explicitly search for MOOS-V10, set up include paths, set up an exectuble
+, explicitly search for MOOS-V10, set up include paths, set up an executable
  and finally indicate how to link.
 \end_layout
 
@@ -1413,7 +1548,7 @@ find_package(MOOS V10)
 \family default
  to work.
  CMake simply appears to automagically find the latest build directory.
- Its worth understanding how this is done.
+ It is worth understanding how this is done.
  CMake provides support for 
 \family typewriter
 find_package 
@@ -1450,7 +1585,7 @@ Trouble Shooting
 All the above should go smoothly but there have been instances reported
  in which things go wrong - this is always due to previous installations
  of MOOS and old configuration files hanging around.
- Exceuting the following steps should help if you get into trouble
+ Executing the following steps should help if you get into trouble
 \end_layout
 
 \begin_layout Itemize
@@ -1524,7 +1659,7 @@ on the line
 , pick up and mail the DB has waiting for it.
  Of course we must stress that the user has to opt in for this new functionality
  - there is no imperative to run new code.
- To enable Aysnchronous Comms you need to enable 
+ To enable Asynchronous Comms you need to enable 
 \family typewriter
 USE_ASYNC_COMMS
 \family default
@@ -1612,7 +1747,7 @@ status open
 
 \begin_layout Plain Layout
 Indeed many users have little direct interaction with the communications
- object preferrring instead to operate withing the comfort of classes derived
+ object preferring instead to operate withing the comfort of classes derived
  from CMOOSApp which wraps the low level communications API.
  
 \end_layout
@@ -1627,8 +1762,12 @@ When a MOOS::AsyncCommClient connects to a V10 MOOSDB it instigates some
  quite different behaviour.
  Firstly the DB spawns two additional threads -one to handle reading from
  the client and one to handle writing to the client.
- These threads are not synchronised - they operate independently pulling
- and pushing data from work queues from withing the DB itself.
+ These threads are not 
+\lang british
+synchronised
+\lang english
+ - they operate independently pulling and pushing data from work queues
+ from within the DB itself.
  The client itself also has distinct read and write threads - when a user
  posts some data it is added to a work queue on which the read thread is
  waiting.
@@ -1722,13 +1861,13 @@ CMOOSApp
 
 \begin_layout Standard
 MOOS V10 offers three new configuration modes which are described in the
- tabel below.
+ table below.
  The mode in which the application operates can be set either in the application
 s configuration block (e.g by having a line like 
 \family typewriter
 IterateMode = 2
 \family default
- or programatically by calling 
+ or programmatically by calling 
 \family typewriter
 SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL)
 \family default
@@ -2472,7 +2611,7 @@ wildcard subscriptions
  Currently only patterns containing * and ? wildcards are supported with
  their usual meanings so ? means any single character and * means any number
  of characters.
- An example will make this whole thinh clear and we will be using the new
+ An example will make this whole thing clear and we will be using the new
  
 \family typewriter
 CMOOSApp::Register( sVarPattern, sAppPattern,dfInterval) 
@@ -2725,7 +2864,7 @@ CMOOSApp
 \family typewriter
 m_CommandLineParser 
 \family default
-which is used internally to parse the following commandline variables and
+which is used internally to parse the following command line variables and
  flags.
 \end_layout
 
@@ -3624,7 +3763,7 @@ Sometimes its attractive to be able to simply to fire up a program from
 moos_test 
 \family default
 which is designed to achieve just this and it also allows you to simulate
- apllications crashing or operating with high latency networks.
+ applications crashing or operating with high latency networks.
  It is entirely configurable from the command line and has the following
  options (in addition to the standard MOOS ones described in Section 
 \begin_inset CommandInset ref
@@ -3649,31 +3788,34 @@ Publication and Subscription  settings:
 
 \begin_layout Plain Layout
 
--s=<string>            : list of subscriptions in form var_name@period eg
- -s=x,y,z 
+-s=<string>  : list of subscriptions as var_name@period 
 \end_layout
 
 \begin_layout Plain Layout
 
--w=<string>            : list of wildcard subscriptions in form var_pattern:app_
-patterd@period eg -w=x*:*@0.1,*:GPS@0.0 z   
-\end_layout
-
-\begin_layout Plain Layout
-
--p=<string>            : list of publications in form var_name[:optional_binary_
-size]@period eg -p=x@0.5,y:2048@2.0   
-\end_layout
-
-\begin_layout Plain Layout
-
---latency              : show latency (time between posting and receiving)
+-w=<string>  : list of wildcard subscriptions as var_pattern:app_patter@period
    
 \end_layout
 
 \begin_layout Plain Layout
 
---verbose              : verbose output
+-p=<string>  : list of publications as var_name[:optional_binary_size]@period
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+--latency    : show latency (time between posting and receiving)   
+\end_layout
+
+\begin_layout Plain Layout
+
+--verbose    : verbose output
+\end_layout
+
+\begin_layout Plain Layout
+
+--bandwidth  : show badnwidth statistics
 \end_layout
 
 \begin_layout Plain Layout
@@ -3687,26 +3829,42 @@ Network failure simulation:
 
 \begin_layout Plain Layout
 
---simulate_network_failure=<numeric>   : enable simulation of network/app
- failure   
+--simulate_network_failure=<numeric>   
 \end_layout
 
 \begin_layout Plain Layout
 
---network_failure_prob=<numeric>       : probability of each DB interaction
- having network failure [0.1]   
+			: enable simulation of network/app failure   
 \end_layout
 
 \begin_layout Plain Layout
 
---network_failure_time=<numeric>       : duration of network failure [3s]
-   
+--network_failure_prob=<numeric>       
 \end_layout
 
 \begin_layout Plain Layout
 
---application_failure_prob=<numeric>   : probability of application failing
- during DB-communication [0]
+			: probability of each DB interaction having network failure [0.1]   
+\end_layout
+
+\begin_layout Plain Layout
+
+--network_failure_time=<numeric>       
+\end_layout
+
+\begin_layout Plain Layout
+
+			: duration of network failure [3s]   
+\end_layout
+
+\begin_layout Plain Layout
+
+--application_failure_prob=<numeric>   
+\end_layout
+
+\begin_layout Plain Layout
+
+			: probability of application failing during DB-communication [0]
 \end_layout
 
 \begin_layout Plain Layout
@@ -3825,7 +3983,12 @@ end{lstlisting}
 \begin_layout Standard
 which subscribes for every issue of X (which we are publishing ourself!)
  and also Z at to 8 Hz.
- The verbose simply adds some printing so you can check progress.
+ Note that 
+\begin_inset Formula $0Hz$
+\end_inset
+
+ is overloaded to mean subscribe to everything.
+ The verbose flag simply adds some printing so you can check progress.
  You can of course also access the wildcard subscription service offered
  by MOOS 10.
  This is done via the 
@@ -3865,8 +4028,8 @@ end{lstlisting}
 \end_layout
 
 \begin_layout Standard
-listens dows all the above and subscribes to all messages from a process
- called 
+does all the above and subscribes to all messages from a process called
+ 
 \family typewriter
 \series bold
 ProcA
@@ -3875,6 +4038,59 @@ ProcA
 .
  Note the use of the single quotation to stop the shell interpreting the
  wilcard '*'.
+ Of course you can build complicated filters this way
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./moos_test --verbose --bandwidth -w='*:ProcA@1,battery_*:monitor_?'
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which subscribes to everything from ProcA at 1Hz and every issue of any
+ variable which begins with 
+\begin_inset Quotes eld
+\end_inset
+
+battery_
+\begin_inset Quotes erd
+\end_inset
+
+ from any process which whose name begins with 
+\begin_inset Quotes eld
+\end_inset
+
+monitor_
+\begin_inset Quotes erd
+\end_inset
+
+ and ends with any single character.
+ This example also prints out these messages and also bandwidth statistics.
+ You can also use the network failure simulation switches to test MOOS's
+ ability to deal with errant clients.
 \end_layout
 
 \begin_layout Standard
@@ -3954,7 +4170,7 @@ bin
 \family default
 you will find an executable called 
 \family typewriter
-uDBAsyncTest 
+async_test 
 \family default
 which can be used to do some benchmarking.
  The program 
@@ -4135,7 +4351,7 @@ Example Usage:  test for 15 seconds with 20 clients and sending 100K every
 
 \begin_layout Plain Layout
 
-	./uDBAsyncTest  -p=15 -c=20 -m=50 -s=100000
+	./async_test  -p=15 -c=20 -m=50 -s=100000
 \end_layout
 
 \begin_layout Plain Layout
@@ -4167,22 +4383,22 @@ status open
 
 \begin_layout Plain Layout
 
-./aysnc_test  -p=20 -c=5 -m=50 -s=1000
+./async_test  -p=20 -c=5 -m=50 -s=1000
 \end_layout
 
 \begin_layout Plain Layout
 
-./aysnc_test  -p=20 -c=5 -m=50 -s=10000
+./async_test  -p=20 -c=5 -m=50 -s=10000
 \end_layout
 
 \begin_layout Plain Layout
 
-./aysnc_test  -p=20 -c=5 -m=50 -s=10000
+./async_test  -p=20 -c=5 -m=50 -s=10000
 \end_layout
 
 \begin_layout Plain Layout
 
-./aysnc_test  -p=20 -c=5 -m=50 -s=1000000
+./async_test  -p=20 -c=5 -m=50 -s=1000000
 \end_layout
 
 \end_inset
@@ -4203,7 +4419,7 @@ was on the same machine as .
 \family typewriter
 /
 \family default
-aysnc_test
+async_test
 \family typewriter
  
 \family default
@@ -4211,7 +4427,7 @@ which means we are testing logic speed not network speed.
  The results are gathered on a 2.2GHz Intel Core i7 Mac book Pro running
  OS X 10.8 and all code was built in Debug (so these results are conservative).
  Its pretty clear that V10 clients offer between one and two orders of magnitude
- improvement in performance interms of latency.
+ improvement in performance in terms of latency.
 \end_layout
 
 \begin_layout Standard
@@ -4363,7 +4579,7 @@ Sending and receiving 1MB messages
 Histograms of latencies between sending and receiving 1KB,10KB, 100KB and
  1MB messages.
  Messages are sent to 5 clients at 20Hz.
- Top figures are for aysnchronous clients lower figures are for pre V10
+ Top figures are for asynchronous clients lower figures are for pre V10
  clients with a comms-tick to 20Hz.
  All cases are using the 
 \family typewriter
@@ -4532,7 +4748,7 @@ Sending and receiving 1MB messages at 10Hz
 Histograms of latencies between sending and receiving 1KB,10KB, 100KB and
  1MB messages.
  Messages are sent to 50 clients at 20Hz unless otherwise stated.
- Top figures are for aysnchronous clients lower figures are for pre V10
+ Top figures are for asynchronous clients lower figures are for pre V10
  clients with a comms-tick to 20Hz.
  All cases are suing the 
 \family typewriter
@@ -4785,6 +5001,14 @@ CMOOSApp
 --moos_name
 \family default
  are handled automatically for you.
+ If this is a surprise read section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Common-Command-Line"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -4793,46 +5017,6 @@ The way in which in this example
 SetIterateMode
 \family default
  is used to make the application respond quickly to the reception of mail.
-\end_layout
-
-\begin_layout Section
-Under the hood
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/howitworks.pdf
-	width 90col%
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_body

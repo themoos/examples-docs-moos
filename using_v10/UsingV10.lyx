@@ -187,6 +187,35 @@ Functional Headlines
 \begin_layout Itemize
 
 \series bold
+Low latency
+\series default
+ Asynchronous communications are now supported via an upgraded 
+\family typewriter
+MOOSDB
+\family default
+ and a new kind of communications client object 
+\family typewriter
+MOOSAsyncCommClient.
+
+\family default
+ This allows data to be pushed to clients by the 
+\family typewriter
+MOOSDB
+\family default
+ rather than clients having to fetch messages which match their subscriptions
+ when the call into the 
+\family typewriter
+MOOSDB.
+ 
+\family default
+This affords a drastically decreased latency between data being published
+ and clients receiving it.
+ Latencies are routinely sub-millisecond now.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
 Multithreaded design
 \series default
  The 
@@ -254,34 +283,6 @@ K
 \end_inset
 
  
-\end_layout
-
-\begin_layout Itemize
-
-\series bold
-Low latency
-\series default
- Asynchronous communications are now supported via an upgraded 
-\family typewriter
-MOOSDB
-\family default
- and a new kind of communications client object 
-\family typewriter
-MOOSAsyncCommClient.
-
-\family default
- This allows data to be pushed to clients by the 
-\family typewriter
-MOOSDB
-\family default
- rather than clients having to fetch messages which match their subscriptions
- when the call into the 
-\family typewriter
-MOOSDB.
- 
-\family default
-This affords a drastically decreased latency between data being published
- and clients receiving it.
 \end_layout
 
 \begin_layout Itemize
@@ -4580,13 +4581,13 @@ Histograms of latencies between sending and receiving 1KB,10KB, 100KB and
  1MB messages.
  Messages are sent to 5 clients at 20Hz.
  Top figures are for asynchronous clients lower figures are for pre V10
- clients with a comms-tick to 20Hz.
+ clients with a comms-tick set 20Hz.
  All cases are using the 
 \family typewriter
 V10 MOOSDB.
 
 \family default
- As an example of total through put take the example of sending 100KB messages
+ As an example of total throughput take the example of sending 100KB messages
  to 5 clients 20 times a second so 100K*5*20=10MB/s.
 \begin_inset CommandInset label
 LatexCommand label

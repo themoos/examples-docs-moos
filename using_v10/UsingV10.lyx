@@ -4816,7 +4816,7 @@ status open
 
 
 \backslash
-lstinputlisting[caption={A simple example using MOOSAysncCommClient}]{examples/C
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient}]{examples/C
 ommsExample/CommsExample.cpp}
 \end_layout
 
@@ -4859,7 +4859,7 @@ status open
 
 
 \backslash
-lstinputlisting[caption={A simple example using MOOSAysncCommClient}]{examples/A
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient}]{examples/A
 ppExample/AppExample.cpp}
 \end_layout
 

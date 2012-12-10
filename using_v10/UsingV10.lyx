@@ -3752,7 +3752,7 @@ name "sec:Bench-Marks"
 \begin_layout Subsection
 Testing with 
 \family typewriter
-moos_test
+umm
 \end_layout
 
 \begin_layout Standard
@@ -3761,9 +3761,47 @@ Sometimes its attractive to be able to simply to fire up a program from
  - just to test the MOOS Communications facilities and explore performance.
  There is a tool called 
 \family typewriter
-moos_test 
+umm 
 \family default
-which is designed to achieve just this and it also allows you to simulate
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if you forget this name you may end up saying 
+\begin_inset Quotes eld
+\end_inset
+
+umm...
+\begin_inset Quotes erd
+\end_inset
+
+ as you recall you are looking to 
+\begin_inset Quotes eld
+\end_inset
+
+
+\series bold
+u
+\series default
+ 
+\series bold
+m
+\series default
+onitor 
+\series bold
+m
+\series default
+oos
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ which is designed to achieve just this and it also allows you to simulate
  applications crashing or operating with high latency networks.
  It is entirely configurable from the command line and has the following
  options (in addition to the standard MOOS ones described in Section 
@@ -3899,7 +3937,7 @@ begin{lstlisting}[style=Bash]
 
 \begin_layout Plain Layout
 
-./moos_test -p=X@20 
+./umm -p=X@20 
 \end_layout
 
 \begin_layout Plain Layout
@@ -3933,7 +3971,7 @@ begin{lstlisting}[style=Bash]
 
 \begin_layout Plain Layout
 
-./moos_test -p=X@20,Y:10000@15 
+./umm -p=X@20,Y:10000@15 
 \end_layout
 
 \begin_layout Plain Layout
@@ -3966,7 +4004,7 @@ begin{lstlisting}[style=Bash]
 
 \begin_layout Plain Layout
 
-./moos_test -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose
+./umm -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose
 \end_layout
 
 \begin_layout Plain Layout
@@ -4013,7 +4051,7 @@ begin{lstlisting}[style=Bash]
 
 \begin_layout Plain Layout
 
-./moos_test -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose -w='*:ProcA@0'
+./umm -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose -w='*:ProcA@0'
 \end_layout
 
 \begin_layout Plain Layout
@@ -4055,7 +4093,7 @@ begin{lstlisting}[style=Bash]
 
 \begin_layout Plain Layout
 
-./moos_test --verbose --bandwidth -w='*:ProcA@1,battery_*:monitor_?'
+./umm --verbose --bandwidth -w='*:ProcA@1,battery_*:monitor_?'
 \end_layout
 
 \begin_layout Plain Layout
@@ -4117,15 +4155,15 @@ Tip:
 \series default
 you can use 
 \family typewriter
-moos_test
+umm
 \family default
  to watch all MOOS traffic try 
 \family typewriter
-./moos_test -w='*:*@0' --verbose 
+./umm -w='*:*@0' --verbose 
 \family default
 to see everything or 
 \family typewriter
-./moos_test -w='*:ProcA@1' 
+./umm -w='*:ProcA@1' 
 \family default
 to see everything from 
 \family typewriter

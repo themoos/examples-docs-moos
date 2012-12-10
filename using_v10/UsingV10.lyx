@@ -715,6 +715,29 @@ build
 \end_inset
 
 .
+ We will also, after fetching the source switch to the 
+\begin_inset Quotes eld
+\end_inset
+
+devel
+\begin_inset Quotes erd
+\end_inset
+
+ branch because here we are living on the edge 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if you want to know what branches are available type 
+\family typewriter
+git branch
+\end_layout
+
+\end_inset
+
+
+\family typewriter
+.
 \end_layout
 
 \begin_layout Standard
@@ -730,17 +753,32 @@ begin{lstlisting}[style=Bash]
 
 \begin_layout Plain Layout
 
-pmn@mac:~$ mkdir core-moos-v10; 
+pmn@mac:~$ mkdir core-moos-v10 
 \end_layout
 
 \begin_layout Plain Layout
 
-pmn@mac:~$ cd core-moos-v10;
+pmn@mac:~$ cd core-moos-v10
 \end_layout
 
 \begin_layout Plain Layout
 
-pmn@mac:~$ git clone path-to-git-repos src
+pmn@mac:~$ git clone git@github.com:themoos/core-moos.git src
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd src
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ git checkout devel 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd ..
 \end_layout
 
 \begin_layout Plain Layout

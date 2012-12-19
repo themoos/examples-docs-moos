@@ -3007,6 +3007,11 @@ flags:
 
 \begin_layout Plain Layout
 
+--moos_quiet                : dont't print banner information
+\end_layout
+
+\begin_layout Plain Layout
+
 --moos_quit_on_iterate_fail : quit if iterate fails 
 \end_layout
 

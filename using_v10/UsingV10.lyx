@@ -1698,7 +1698,11 @@ on the line
 , pick up and mail the DB has waiting for it.
  Of course we must stress that the user has to opt in for this new functionality
  - there is no imperative to run new code.
- To enable Asynchronous Comms you need to enable 
+ To enable Asynchronous Comms in clients derived from 
+\family typewriter
+CMOOSApp
+\family default
+ you need to enable 
 \family typewriter
 USE_ASYNC_COMMS
 \family default
@@ -1715,7 +1719,33 @@ vspace{5mm}
 
 \end_inset
 
-
+.
+ This flag makes the m_
+\family typewriter
+Comms
+\family default
+ member of 
+\family typewriter
+CMOOSApp
+\family default
+ an 
+\family typewriter
+MOOS::MOOSAsyncCommsClient
+\family default
+ rather than a 
+\family typewriter
+CMOOSCommClient.
+ 
+\family default
+Note that you can have this flag turned off and still use a
+\family typewriter
+ MOOS::MOOSAsyncCommsClient
+\family default
+ object and the 
+\family typewriter
+MOOSDB
+\family default
+ will service that object's interactions appropriately.
 \end_layout
 
 \begin_layout Standard
@@ -1739,7 +1769,7 @@ status open
 \series bold
 Tip: 
 \series default
-To enable fast asynchronous comms you have to turn 
+To enable fast asynchronous comms in MOOSApps you have to turn 
 \family typewriter
 USE_ASYNC_COMMS
 \family default
@@ -1747,7 +1777,8 @@ USE_ASYNC_COMMS
 \family typewriter
 ON 
 \family default
-when configuring MOOS using CMake
+when configuring MOOS using CMake.
+ 
 \end_layout
 
 \end_inset
@@ -1797,8 +1828,15 @@ Indeed many users have little direct interaction with the communications
 \end_layout
 
 \begin_layout Standard
-When a MOOS::AsyncCommClient connects to a V10 MOOSDB it instigates some
- quite different behaviour.
+When a 
+\family typewriter
+MOOS::MOOSAsyncCommClient
+\family default
+ connects to a V10 
+\family typewriter
+MOOSDB
+\family default
+ it instigates some quite different behaviour.
  Firstly the DB spawns two additional threads -one to handle reading from
  the client and one to handle writing to the client.
  These threads are not 
@@ -1824,8 +1862,11 @@ mailbox
 
  and optionally a user callback is invoked.
  Importantly, this architecture of each client having a read and write thread
- at the client and MOODB ends allows for data to be pushed to clients at
- any time.
+ at the client and 
+\family typewriter
+MOOSDB
+\family default
+ ends, allows for data to be pushed to clients at any time.
  Take for example the case of 50 clients all having subscribed for variable
  
 \family typewriter
@@ -1837,9 +1878,10 @@ X
 \begin_inset Quotes erd
 \end_inset
 
+.
 
 \family default
- when the 51st client publishes 
+ When the 51st client publishes 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1852,7 +1894,11 @@ X
 \end_inset
 
  this data can be instantly placed on the outgoing queue of all 50 interested
- clients.
+ clients within th3 
+\family typewriter
+MOOSDB
+\family default
+.
  Because the read threads on the clients are in a blocking read they two
  an respond immediately leading to some very responsive behaviour.
  Note also that if one of those clients has a dodgey communications link
@@ -2982,6 +3028,15 @@ variables:
 
 \begin_layout Plain Layout
 
+--moos_time_warp=<number>   : set moos time warp
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
 flags:   
 \end_layout
 
@@ -3329,52 +3384,22 @@ status open
 
 \begin_layout Plain Layout
 
-  client name   pkts in  pkts out    B/s in  B/s out
+  client name   pkts in  pkts out  msgs in  msgs out   B/s in  B/s out
 \end_layout
 
 \begin_layout Plain Layout
 
-         0        20        20      1207      1227
+         0        20        17      20	  20		  1207      1227
 \end_layout
 
 \begin_layout Plain Layout
 
-         1        19        19      1216      2177
+         1        19        19      19	  19		  1216      2177
 \end_layout
 
 \begin_layout Plain Layout
 
-         2        19        29       171      1241
-\end_layout
-
-\begin_layout Plain Layout
-
-         3        19        19      1216      2177
-\end_layout
-
-\begin_layout Plain Layout
-
-         4        19        29       171      1241
-\end_layout
-
-\begin_layout Plain Layout
-
-         5        19        19      1216      2177
-\end_layout
-
-\begin_layout Plain Layout
-
-         6        19        29       171      1241
-\end_layout
-
-\begin_layout Plain Layout
-
-         7        19        19      1216      2177
-\end_layout
-
-\begin_layout Plain Layout
-
-     total       153       183      6584     13658
+     total        39        36      39      39		  2423	  3404
 \end_layout
 
 \end_inset

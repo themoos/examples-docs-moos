@@ -3052,17 +3052,17 @@ flags:
 
 \begin_layout Plain Layout
 
---moos_no_sort_mail         : don't sort mail by time    
+--moos_no_sort_mail         : do not sort mail by time    
 \end_layout
 
 \begin_layout Plain Layout
 
---moos_no_comms             : don't start communications    
+--moos_no_comms             : do not start communications    
 \end_layout
 
 \begin_layout Plain Layout
 
---moos_quiet                : dont't print banner information
+--moos_quiet                : do not print banner information
 \end_layout
 
 \begin_layout Plain Layout
@@ -3132,11 +3132,19 @@ status open
 \series bold
 Tip: 
 \series default
-To enable common command line parsing call 
+To enable common command line parsing call
+\begin_inset Newline newline
+\end_inset
+
+
 \family typewriter
 CMOOSApp::Run(moos_name,mission_file,argc,argv)
 \family default
- or a variant when you start a 
+ 
+\end_layout
+
+\begin_layout Plain Layout
+or a variant when you start a 
 \family typewriter
 MOOSApp
 \end_layout
@@ -3269,44 +3277,56 @@ MOOSDB command line help:
 
 \begin_layout Plain Layout
 
--m    (--mission_file)  <string>            specify mission file name 
+--moos_file=<string>                  specify mission file name 
 \end_layout
 
 \begin_layout Plain Layout
 
--p    (--server_port)  <positive_integer>   specify server port number 
- 
+--moos_port=<positive_integer>        specify server port number  
 \end_layout
 
 \begin_layout Plain Layout
 
--s    (--single_threaded)                   run as a single thread 
+--moos_timewarp= <positive_float>     specify time warp 
 \end_layout
 
 \begin_layout Plain Layout
 
--w    (--time_warp)    <positive_float>     specify time warp 
+--moos_community=<string>             specify community name 
 \end_layout
 
 \begin_layout Plain Layout
 
--d    (--dns)                               run with dns lookup 
+--moos_timeout=<positive_float>       specify client timeout 
 \end_layout
 
 \begin_layout Plain Layout
 
--c    (--community)    <string>             specify community name 
 \end_layout
 
 \begin_layout Plain Layout
 
--W    (--webserver)    <positive_integer>   run webserver on given port
- 
+--response=<string-list>			  specifiy client response times <name:response_ms,...>
 \end_layout
 
 \begin_layout Plain Layout
 
--h    (--help)                              print help and exit
+-s (--single_threaded)                run as a single thread 
+\end_layout
+
+\begin_layout Plain Layout
+
+-d (--dns)                            run with dns lookup 
+\end_layout
+
+\begin_layout Plain Layout
+
+--webserver_port=<positive_integer>   run webserver on given port 
+\end_layout
+
+\begin_layout Plain Layout
+
+-h    (--help)                        print help and exit
 \end_layout
 
 \end_inset
@@ -3317,6 +3337,106 @@ MOOSDB command line help:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Configuring Client Response Times
+\end_layout
+
+\begin_layout Standard
+The MOOSDB has some inbuilt security controls that are designed to prevent
+ a rogue, ill mannered client to hog resources.
+ It seems improper that a random client joining a community can decide to
+ send 10 million messages persecond and because of that reduce the performance
+ of other clients.
+ On the other hand it seems inappropriate to disallow all clients for all
+ time very rapid performance simply because of a percieved risk.
+ The solution offered in MOOS-V10 is that the MOOSDB by default offers premiums
+ service to all comers 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if they are using the AsyncComms
+\end_layout
+
+\end_inset
+
+ - in other words every client will be serviced as soon as possible and
+ all clients will be have data pushed to them as soon as possible.
+ However the launcher of the 
+\family typewriter
+MOOSDB
+\family default
+ may choose to restrict response times for clients- this has the effect
+ of having each transaction with the DB contain more indvidual messages
+ and prevents rogue clients being disruptive.
+ Even introducing a repsonse time of 10ms can have a marked increase in
+ performance for a very heavily loaded system.
+ It is also possible to control which clients should be throttled and which
+ should not.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=*:20
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=VisualOdometry:10
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=Camera??:10,VisualOdometry:10,*:20
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, the first example sets all clients to have a minimum reposnse
+ time of 20ms.
+ The second example expicitly sets a client called 
+\family typewriter
+VisualOdometry 
+\family default
+to have a 10ms response while all others have the default of 0ms (instant
+ response).
+ The final example has any client whos name begins with 
+\begin_inset Quotes eld
+\end_inset
+
+Camera
+\begin_inset Quotes erd
+\end_inset
+
+ followed by two characters set to 10ms and 
+\family typewriter
+VisualOdometry
+\family default
+ at 10ms and every other client at 20ms.
 \end_layout
 
 \begin_layout Subsubsection

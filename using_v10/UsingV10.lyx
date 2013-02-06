@@ -3225,6 +3225,30 @@ is called when
  parameters inside this function.
 \end_layout
 
+\begin_layout Subsubsection
+The Publication of CPU load
+\end_layout
+
+\begin_layout Standard
+In a 
+\family typewriter
+CMOOSApp
+\family default
+, every application publishes a status message.
+ You get to add detail to this message by overloading (and within your overload
+ calling) 
+\family typewriter
+CMOOSApp::MakeStatusString().
+ 
+\family default
+The default message now contains CPU load information for that process expressed
+ as a percentage of available cpu grunt.
+ There is a standalone class which can be used to acquire CPU information
+ - it is 
+\family typewriter
+MOOS::ProcInfo.
+\end_layout
+
 \begin_layout Subsection
 MOOSDB Interface Improvements
 \end_layout
@@ -3306,7 +3330,7 @@ MOOSDB command line help:
 
 \begin_layout Plain Layout
 
---response=<string-list>			  specifiy client response times <name:response_ms,...>
+--response=<string-list>			  specify client response times <name:response_ms,...>
 \end_layout
 
 \begin_layout Plain Layout
@@ -3347,7 +3371,7 @@ Configuring Client Response Times
 The MOOSDB has some inbuilt security controls that are designed to prevent
  a rogue, ill mannered client to hog resources.
  It seems improper that a random client joining a community can decide to
- send 10 million messages persecond and because of that reduce the performance
+ send 10 million messages persecond and because of that, reduce the performance
  of other clients.
  On the other hand it seems inappropriate to disallow all clients for all
  time very rapid performance simply because of a percieved risk.
@@ -3437,6 +3461,35 @@ Camera
 VisualOdometry
 \family default
  at 10ms and every other client at 20ms.
+\end_layout
+
+\begin_layout Subsubsection
+Specifying When Clients are Assumed Dead
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+MOOSDB
+\family default
+ has alway been suspicious of clients that unexpectedly go quiet (the comms
+ thread, which operates behind the scenes, stops working) and it will disconnect
+ them.
+ However its pretty annoying if you are debugging an application and because
+ you could not solve you problem in 5 seconds, the DB disconnects your applicati
+on and so differnt behaviour is invoked while debugging (the app will try
+ to reconnect as soon the debugger sets teh application free).
+ In V10, 
+\family typewriter
+MOOSDB
+\family default
+ has the 
+\family typewriter
+--moos_timeout
+\family default
+ option which allows you to specify the time in seconds the DB should tolerate
+ a silent client.
+ Set this to a big number when you are debugging.
 \end_layout
 
 \begin_layout Subsubsection

@@ -4095,7 +4095,31 @@ Publication and Subscription  settings:
 
 \begin_layout Plain Layout
 
---bandwidth  : show badnwidth statistics
+--bandwidth  : show bandwidth statistics
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+spying helpful settings:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--spy          		: spy on all variables at 1Hz   
+\end_layout
+
+\begin_layout Plain Layout
+
+--spy_all          	: spy on all variables   
+\end_layout
+
+\begin_layout Plain Layout
+
+--spy_proc=<string>    : spy on all variables from a named processes
 \end_layout
 
 \begin_layout Plain Layout
@@ -4158,7 +4182,17 @@ Network failure simulation:
 
 \begin_layout Standard
 Some examples are probably useful at this point.
- So if we wanted to send the variable 
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Publishing Variables with 
+\family typewriter
+umm
+\end_layout
+
+\begin_layout Standard
+So if we wanted to send the variable 
 \family typewriter
 X 
 \family default
@@ -4229,7 +4263,17 @@ end{lstlisting}
 
 \begin_layout Standard
 and this would write Y as 10K of binary data a 15 Hz.
- We can also subscribe to data
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Subscribing with 
+\family typewriter
+umm
+\end_layout
+
+\begin_layout Standard
+We can also subscribe to data
 \end_layout
 
 \begin_layout Standard
@@ -4269,7 +4313,15 @@ which subscribes for every issue of X (which we are publishing ourself!)
 
  is overloaded to mean subscribe to everything.
  The verbose flag simply adds some printing so you can check progress.
- You can of course also access the wildcard subscription service offered
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Wildcard subscriptions with umm
+\end_layout
+
+\begin_layout Standard
+You can of course also access the wildcard subscription service offered
  by MOOS 10.
  This is done via the 
 \family typewriter
@@ -4416,6 +4468,83 @@ ProcA
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Generic Spying with umm
+\end_layout
+
+\begin_layout Standard
+Building on the above 
+\family typewriter
+umm 
+\family default
+offers some short cuts for spying on the publications of the community at
+ large
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --spy
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --spy_all
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --spy_proc=GPS,INS
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+here, in the first example, we have asked to be told about all publications
+ every second.
+ The second example lists each and every publication and the last listens
+ only to publications from the specified processes.
+\end_layout
+
+\begin_layout Subsubsection
+Logging with umm
+\end_layout
+
+\begin_layout Standard
+Sometime its nice to simply be able to capture messages around the community
+ from the command line.
+ 
+\family typewriter
+umm
+\family default
+ can help.
+ By using the 
+\family typewriter
+--log=file_name 
+\family default
+switch all captured messages are written to a a text file.
 \end_layout
 
 \begin_layout Standard

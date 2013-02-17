@@ -1,0 +1,1685 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{verbatim}
+%\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{textcomp}
+\lstdefinestyle{Bash}
+{language=bash,
+keywordstyle=\color{blue},
+basicstyle=\ttfamily,
+morekeywords={moosuser@machine},
+alsoletter={:~$},
+morekeywords=[2]{moosuser@machine:},
+keywordstyle=[2]{\color{red}},
+literate={\$}{{\textcolor{red}{\$}}}1 
+         {:}{{\textcolor{red}{:}}}1
+         {~}{{\textcolor{red}{\textasciitilde}}}1,
+}
+
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\usepackage{listings}
+\definecolor{codebg}{HTML}{F1F1E4}
+\lstset{
+tabsize=4,
+language=matlab,
+        basicstyle=\small,
+        upquote=true,
+        %aboveskip={1.5\baselineskip},
+        columns=fixed,
+        showstringspaces=false,
+        extendedchars=true,
+        breaklines=true,
+        framesep=10pt,
+        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+        %frame=single,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=false,
+        identifierstyle=\ttfamily,
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.133,0.545,0.133},
+        stringstyle=\color[rgb]{0.627,0.126,0.941},
+        backgroundcolor=\color{codebg},
+        language=c++
+}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+A MOOS-V10 Tutorial
+\end_layout
+
+\begin_layout Author
+Paul Newman, University of Oxford
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/MOOSV-10-256.pdf
+	width 3cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{2cm}
+\end_layout
+
+\end_inset
+
+....ten years on
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+What will I learn?
+\end_layout
+
+\begin_layout Standard
+This document is intended to help you get started in using the 
+\family typewriter
+MOOS
+\family default
+ communications and application building API.
+ It will take you through, in simple steps, the process of downloading,
+ building and developing with the MOOS library.
+ This will allow you to easily generate programs which can share data using
+ the 
+\family typewriter
+MOOS
+\family default
+ communication tools.
+ These tools are all housed in a single, standalone, dependency-free project
+ called 
+\family typewriter
+core-moos 
+\family default
+so really this is a tutorial about core 
+\family typewriter
+MOOS
+\family default
+ competencies and 
+\family typewriter
+core-moos
+\family default
+ all in one
+\end_layout
+
+\begin_layout Section
+Getting Started - Acquiring and Building MOOS
+\end_layout
+
+\begin_layout Subsection
+Before you start you will need
+\end_layout
+
+\begin_layout Itemize
+a working compiler like 
+\family typewriter
+gcc
+\family default
+ or 
+\family typewriter
+clang
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+CMake
+\family default
+ installed
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+git
+\family default
+ installed (well actually this is optional as you can download the source
+ code as .zip file and we won't make much use of git in this tutorial)
+\end_layout
+
+\begin_layout Subsection
+Downloading and Building
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Downloading-and-Building"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We shall begin where we should and check out a version of MOOS-V10 from
+ a git repos.
+ We will follow good practice and do an out of place build - the source
+ code will go in 
+\begin_inset Quotes eld
+\end_inset
+
+src
+\begin_inset Quotes erd
+\end_inset
+
+ and we will build in 
+\begin_inset Quotes eld
+\end_inset
+
+build
+\begin_inset Quotes erd
+\end_inset
+
+.
+ We will also, after fetching the source switch to the 
+\begin_inset Quotes eld
+\end_inset
+
+devel
+\begin_inset Quotes erd
+\end_inset
+
+ branch because here we are living on the edge 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if you want to know what branches are available type 
+\family typewriter
+git branch
+\end_layout
+
+\end_inset
+
+
+\family typewriter
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ mkdir core-moos-v10 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd core-moos-v10
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ git clone https://github.com/themoos/core-moos.git src
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd src
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ git checkout devel 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd ..
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ mkdir build
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ccmake ../src
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this point you should, after hitting 'c' a couple of times be presented
+ with a CMake screen that looks like that shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-default-build"
+
+\end_inset
+
+ (note some of the entries are platform dependent so don't worry if what
+ you see is not identical to this).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/v10-simple-build.pdf
+	width 90col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-default-build"
+
+\end_inset
+
+The default build screen for MOOS V10.
+ Note that by default USE_ASYNC_COMMS is off.
+ If you want really fast communications you should enable this.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You are are now in a position to build the MOOS.
+ So press 'c' until 'g' appears, then press 'g' and you are good to go.
+ Then at the terminal prompt type 'make' to build the project.
+ Two directories should have been created 
+\series bold
+bin
+\series default
+ and 
+\series bold
+lib.
+ 
+\series default
+In lib you will see 
+\family typewriter
+libMOOS.a
+\family default
+ and in 
+\family typewriter
+bin
+\family default
+ you will find the newly created 
+\family typewriter
+MOOSDB.
+
+\family default
+ If you run up the MOOSDB (by typing ./MOOSDB you should see output similar
+ to that in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:running-the-new-db"
+
+\end_inset
+
+.
+ You are now all set to begin developing with MOOS.
+ Nice job.
+\end_layout
+
+\begin_layout Subsubsection
+A note for exisiting 
+\family typewriter
+MOOS
+\family default
+ Users
+\end_layout
+
+\begin_layout Standard
+Skip this section if you are new to MOOS.
+ If you are already an old hand at MOOS and simply want to link your existing
+ code against MOOS V10 without needing to worry about the new header, rationalis
+ed file structure introduced in MOOS V10 then you will need to turn on 
+\family typewriter
+ENABLE_V10_COMPATIBILITY.
+ 
+\family default
+This switch adds an additional set of include path to those exported by
+ the project, which have the same structure as those present in previous
+ (now legacy) versions of MOOS.
+ If you 
+\begin_inset Quotes eld
+\end_inset
+
+include
+\begin_inset Quotes erd
+\end_inset
+
+ one of these files they actually simply redirect to include header files
+ residing in the new structure.
+ But be advised that this is not a happy long term policy - you should think,
+ if possible, about updating your code - but there is much to be said for
+ not 
+\emph on
+having 
+\emph default
+to change your code simply to use V10.
+ Hence the introduction of this switch.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip:
+\series default
+ Turn on 
+\family typewriter
+ENABLE_V10_COMPATIBILITY 
+\family default
+to make V10 appear to have the header structure of earlier versions.
+ This allows you to use V10 without needing to change any of your source
+ code
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+you can use the V10 
+\family typewriter
+MOOSDB
+\family default
+ with old MOOS applications - you don't 
+\shape italic
+have
+\shape default
+ to recompile them.
+ V10 is backwards compatible.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/MOOSDBRunning.pdf
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:running-the-new-db"
+
+\end_inset
+
+running the new MOOSDB
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Header, Source and Library Structure
+\end_layout
+
+\begin_layout Standard
+The classes that implement the communications and application management
+ (for example 
+\family typewriter
+CMOOSApp)
+\family default
+ reside in a single library called 
+\family typewriter
+libMOOS.
+ 
+\family default
+There are in fact four key subdirectories in 
+\family typewriter
+libMOOS
+\family default
+.
+ In figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Top-level-directory-structure"
+
+\end_inset
+
+you can see the basic structure of the code base.
+ 
+\end_layout
+
+\begin_layout Description
+App contains the classes like CMOOSApp and CMOOSInstrument - you use thse
+ to make application writing very easy
+\end_layout
+
+\begin_layout Description
+Comms contains everything to do with MOOS IPC communications
+\end_layout
+
+\begin_layout Description
+Utils contains everything that used to be in MOOSGenLib (with some nice
+ additions)
+\end_layout
+
+\begin_layout Description
+Thirdparty contains small lumps of thirdparty code which is being leveraged
+ in V10 (all licenses included)
+\end_layout
+
+\begin_layout Description
+include contains some high level include directories that make using libMOOS
+ easy (and backwards compatible)
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The directory called 
+\family typewriter
+\series default
+MOO
+\family default
+SDB
+\series medium
+ contains the source-code of the 
+\family typewriter
+\series default
+MOOSDB
+\family default
+\series medium
+ and has a subdirectory containing various small testing programs.
+ The 
+\family typewriter
+\series default
+MOOSDB
+\family default
+\series medium
+ program has a dependency on core-moos but nothing else.
+ The only other directory of interest is 
+\family typewriter
+\series default
+tools which is home to 'umm' 
+\family default
+the swiss army knife of MOOS.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/structure.pdf
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Top-le
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Top-level-directory-structure"
+
+\end_inset
+
+vel directory structure for MOOS V10
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Header structure
+\end_layout
+
+\begin_layout Standard
+It is important to understand where the header files are found in the file
+ structure of the MOOS project - they typically do not live along side the
+ corresponding .cpp files.
+ Take for example CMOOSApp.cpp which lives at Core/libMOOS/Apps/CMOOSApp.cpp
+ - the actual location of CMOOSApp.h is libMOOS/Apps/include/MOOS/libMOOS/Apps/CM
+OOSApp.h.
+ This may seem convoluted but it eases many things when it comes to developing
+ in various IDE's and a constant way to reference headerfiles in during
+ development and when installed.
+ In this case CMOOSApp.h is included by writing #include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/Apps/CMOOSApp.h
+\begin_inset Quotes erd
+\end_inset
+
+ whether or not the headers are installed or whether or not you are tinkering
+ with MOOS source itself.
+ So it helps to have a rule.
+ If the source file is in libMOOS/X/file.cpp then the header is included
+ as #include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/X/file.h
+\begin_inset Quotes erd
+\end_inset
+
+ - simple.
+\end_layout
+
+\begin_layout Subsection
+Importing and Building Against MOOS-V10
+\end_layout
+
+\begin_layout Standard
+So now you have built the new MOOS.
+ Next questions is 
+\begin_inset Quotes eld
+\end_inset
+
+how do you link against it
+\begin_inset Quotes erd
+\end_inset
+
+.
+ If you use 
+\family typewriter
+CMake
+\family default
+ then this is trivial you just need to insert the line 
+\family typewriter
+find_package(MOOS 10)
+\family default
+ in your 
+\family typewriter
+CMakeList.txt
+\family default
+ script.
+ This goes and finds the latest build you made of MOOS V10 (and only V10)
+ and collects the correct include paths, library names and library paths
+ and puts them in the following 
+\family typewriter
+CMake
+\family default
+ variables:
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_INCLUDE_DIRS
+\family default
+\series bold
+ 
+\series default
+This contains the list of include directories you need to include to find
+ 
+\family typewriter
+MOOS V10
+\family default
+ header files.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_DEPEND_INCLUDE_DIRS 
+\family default
+This contains the list of include directories which MOOS needs to find teh
+ headers it depends on (should be empty)
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_LIBRARIES 
+\family default
+This contains the precise library name ( absolute path) for 
+\family typewriter
+libMOOS 
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_DEPEND_LIBRARIES 
+\family default
+This contains the absolute paths for the libraries MOOS depends on (should
+ be empty)
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+These variables can be used to import all you need to know about MOOS into
+ an external project.
+ You can see how to do this in some the example 
+\family typewriter
+\series default
+CMakeLists.txt
+\family default
+\series medium
+ file given below.
+ Here we make an executable called 
+\family typewriter
+\series default
+example_moos 
+\family default
+, explicitly search for MOOS-V10, set up include paths, set up an executable
+ and finally indicate how to link.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\small},language=bash"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#this builds some code using MOOS
+\end_layout
+
+\begin_layout Plain Layout
+
+set(EXECNAME example_moos)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#find MOOS version 10 be explicit about version 10 so we don't
+\end_layout
+
+\begin_layout Plain Layout
+
+#find another old version
+\end_layout
+
+\begin_layout Plain Layout
+
+find_package(MOOS 10)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#what source files are needed to make this exectutable? 
+\end_layout
+
+\begin_layout Plain Layout
+
+set(SRCS  example_moos.cpp)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#where should one look to find headers?
+\end_layout
+
+\begin_layout Plain Layout
+
+include_directories( ${MOOS_INCLUDE_DIRS} ${MOOS_DEPEND_INCLUDE_DIRS})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#state we wish to make a computer program
+\end_layout
+
+\begin_layout Plain Layout
+
+add_executable(${EXECNAME} ${SRCS} )
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#and state what libraries said program needs to link against
+\end_layout
+
+\begin_layout Plain Layout
+
+target_link_libraries(${EXECNAME} ${MOOS_LIBRARIES} ${MOOS_DEPEND_LIBRARIES})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+How is MOOS found?
+\end_layout
+
+\begin_layout Standard
+You have probably noticed that you do not need to install MOOS V10 for 
+\family typewriter
+find_package(MOOS V10)
+\family default
+ to work.
+ CMake simply appears to automagically find the latest build directory.
+ It is worth understanding how this is done.
+ CMake provides support for 
+\family typewriter
+find_package 
+\family default
+by writing at build time to a file in ~/.cmake/modules.
+ In this case because we are talking about 
+\family typewriter
+MOOS
+\family default
+ there is a file in ~/.cmake/modules/MOOS (who's name is a whole load of
+ crazy letters) inside of which is the location to a file called 
+\family typewriter
+MOOSConfig.cmake.
+ 
+\family default
+This file  is created in the build directory when MOOS is configured.
+ The find_package directive imports 
+\family typewriter
+MOOSConfig.cmake
+\family default
+ (and from there 
+\family typewriter
+UseMOOS.cmake
+\family default
+) and this tells the importing CMake instance how to use MOOS.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Trouble Shooting
+\end_layout
+
+\begin_layout Standard
+All the above should go smoothly but there have been instances reported
+ in which things go wrong - this is always due to previous installations
+ of MOOS and old configuration files hanging around.
+ Executing the following steps should help if you get into trouble
+\end_layout
+
+\begin_layout Itemize
+clean down the 
+\family typewriter
+MOOS-V10
+\family default
+ project (why not remove the whole build directory?)
+\end_layout
+
+\begin_layout Itemize
+remove all contents of 
+\family typewriter
+~/.cmake/modules/MOOS
+\end_layout
+
+\begin_layout Itemize
+remove any old copies of MOOSConfig.cmake you may have hanging around in
+ you build tree.
+ Note that once upon a time, long ago there was a 
+\family typewriter
+MOOSConfig.cmake
+\family default
+ file checked into the source tree of MOOS-IvP.
+ This can cause all kinds of trouble......
+\end_layout
+
+\begin_layout Itemize
+If header files are not being found by your project:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+if your code previously worked with older versions of MOOS did you change
+ your source code to reflect the new locations of headers? Or, if you really
+ don't want to change you code, did you enable 
+\family typewriter
+V10_COMPATIBILITY
+\family default
+ when you built MOOS-V10?
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Basic MOOS Concepts
+\end_layout
+
+\begin_layout Standard
+Before we start writing some code, we need to cover some basics.
+ If you are already a MOOS users you can skipt to the next section.
+\end_layout
+
+\begin_layout Subsection
+The MOOSDB
+\end_layout
+
+\begin_layout Subsection
+Data Types and 
+\family typewriter
+CMOOSMsg
+\end_layout
+
+\begin_layout Standard
+The fundamental data type which MOOS sends between processes is a 
+\family typewriter
+CMOOSMsg.
+ 
+\family default
+You will ultimately, pehaps behind the scenes in an API call, package your
+ data be that string, double or a chunk of binary data in a CMOOSMsg.
+ Sometimes we refer to the delivery or transmission of one or more CMOOSMsg
+ as getting or sending 
+\begin_inset Quotes eld
+\end_inset
+
+Mail
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Maybe not the best noun to have choosed with hindsight as in the UK at
+ least in real life mail often gets lost and is often late.
+ Luckily the opposite is true in MOOS.
+\end_layout
+
+\begin_layout Subsection
+Comms Clients CMOOSCommClient and MOOS::AsyncCommClient
+\end_layout
+
+\begin_layout Standard
+The term comms client is used to refer to an c++ object which you as a developer
+ can use to send and receive data via the MOOSDB.
+ The object handles all of the details of managing the connection to the
+ DB all you have to do is push data into it and using one of more of the
+ API's get one or more (always in a std::list) of CMOOSMsgs out of it.
+ There are to kinds of comms clients available:
+\end_layout
+
+\begin_layout Subsubsection
+MOOS::AsyncCommClient 
+\end_layout
+
+\begin_layout Standard
+This is the one you should use and was introduced in MOOS-V10 in 2013.
+ It offers the fastest (lowest latency) way of getting data between applications.
+\end_layout
+
+\begin_layout Subsubsection
+CMOOSCommClient 
+\end_layout
+
+\begin_layout Standard
+this is the orginal client written in 2003 when MOOS was in its infancy.
+ You can use it of course and it is after all the base class of MOOS::AsyncCommC
+lient but if you do, you will be missing out on many good things.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+There are some key methods offered by the comms clients which you need to
+ know about
+\end_layout
+
+\begin_layout Subsubsection
+Sending Data with Notify
+\end_layout
+
+\begin_layout Description
+Notify use this method and its overides to send either double, std::string
+ or binary data of any size.
+ The overloaded versions 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+bool Notify(const std::string & sVarName, const std::string & sVal, double
+ dfTime=-1)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+bool Notify(const std::string & sVarName, double dfVal, double dfTime=-1)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+bool Notify(const std::string & sVarName, const std::vector<unsigned char>&
+ vData,double dfTime=-1)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+which send a string a double and a vector of bytes (use this for binary
+ data) respectively under the variable name 
+\family typewriter
+sVarName
+\end_layout
+
+\begin_layout Subsubsection
+Configuring Notfications with 
+\family typewriter
+SetOnMailCallBack
+\end_layout
+
+\begin_layout Subsubsection
+Configuring Connection Notification with 
+\family typewriter
+SetOnConnectCallBack
+\end_layout
+
+\begin_layout Subsubsection
+Configuring Mail Delivery with 
+\family typewriter
+Register
+\end_layout
+
+\begin_layout Subsubsection
+Collecting Mail with Fetch
+\end_layout
+
+\begin_layout Subsubsection
+Starting 
+\family typewriter
+Run
+\end_layout
+
+\begin_layout Subsection
+Application Writing with 
+\family typewriter
+CMOOSApp`
+\end_layout
+
+\begin_layout Section
+Programming with MOOS Clients
+\end_layout
+
+\begin_layout Subsection
+The simplest example - using a raw client
+\end_layout
+
+\begin_layout Standard
+The simplest (in terms of its proximity to the core communication classes)
+ example of using MOOS-V10 communications is given in Listing 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{code:CommsBareBones}
+\end_layout
+
+\end_inset
+
+ below.
+ Here a MOOS::MOOSAsyncCommClient is instantiated in its rawest form.
+ It is configured with a Mail and OnConnect callback and set free with a
+ call to Run.
+ Note that in the Connect callback it registers for the data that is being
+ posted once a second in the main() forever loop.
+ Many MOOS users will be used to using CMOOSApp which manages the interaction
+ with the Comms Client Objects however it is instructive to look at the
+ most fundamental example.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient}, label={cod
+e:CommsBareBones} ]{examples/CommsExample/CommsExampleBareBones.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This example is certainly raw, it assumes the MOOSDB is on localhost and
+ port 9000.
+ We could do a lot better by using the
+\family typewriter
+ MOOS::CommandLineParser 
+\family default
+and using it to discover options provided on the command line as shown in
+ listing 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{code:CommsExample}
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={A fuller example using MOOSAsyncCommClient}, label={cod
+e:CommsExample}]{examples/CommsExample/CommsExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To be complete, Listing 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{code:CommsExampleCMake}
+\end_layout
+
+\end_inset
+
+ shows the complete
+\family typewriter
+ CMakeLists.txt
+\family default
+ file for this example is given in listing 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{code:CommsExampleCMake}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={CMakeLists.txt to the simple example above}, label={code
+:CommsExampleCMake}]{ examples/CommsExample/CMakeLists.txt }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+What is bad about this design?
+\end_layout
+
+\begin_layout Standard
+While this is a simple design it is not the best plan - it opens the door
+ for doing an unbounded amount of work in the callback which is invoked
+ by one of the threads which is used in handling communication with the
+ MOOSDB.
+ Now V10 DB's can handle this but...
+\end_layout
+
+\begin_layout Subsection
+Adding Multiple Callbacks
+\end_layout
+
+\begin_layout Subsection
+Adding Threaded Channels
+\end_layout
+
+\begin_layout Section
+Writing Applications with CMOOSApp
+\end_layout
+
+\begin_layout Standard
+We can of course achieve the same thing by subclassing CMOOSApp.
+ The code listing below shows how.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient}]{examples/A
+ppExample/AppExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Further Examples
+\end_layout
+
+\begin_layout Subsection
+Sharing Video Rate Data
+\end_layout
+
+\begin_layout Standard
+Here is a simple example code for sharing video data using the package OpenCV
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+so you will need OpenCV installed on your machine.
+ The CMakeLists.txt file should find this installation and handle everything
+ for you but if you are using mac ports you may need to specify the location
+ of OpenCV in the ccmake gui as Cmake does not look in /opt by default.
+ 
+\end_layout
+
+\end_inset
+
+.
+ The program can be started in one of two ways - once as a server which
+ opens a camera and starts streaming images and as a client which displays
+ them in a window.
+ Note this is not an elegant program - it fixes the images size and does
+ a fairly ugly bit of memory management.
+ It is presented here as a quick and dirty exposition of using MOOS to send
+ data at a moderate rate - its not an example of good use of OpenCV.
+ 
+\end_layout
+
+\begin_layout Itemize
+Start a MOOSDB
+\end_layout
+
+\begin_layout Itemize
+To start a server in a terminal window from the command line whilst in the
+ directory containing the binary type :
+\family typewriter
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+./camera_example -s --moos_name SERVER
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+To start a client from a similar terminal to that above type : 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+./camera_example --moos_name A
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+To start another client, you guess it, open another terminal and try
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+./camera_example --moos_name B
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+If you do the above you should see you camera output appearing in two windows
+ with very little lag.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={Example code to build a camera sharing example}]{exampl
+es/VideoShare/CameraExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={CMakeLists.txt to build the camera sharing example
+ above}]{ examples/VideoShare/CMakeLists.txt }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are several things to note about this example which are worth spotting:
+\end_layout
+
+\begin_layout Enumerate
+The way in which MOOS-V10 can handle command line argument parsing for you
+ using the 
+\family typewriter
+OnParseCommandLine()
+\family default
+ virtual function in 
+\family typewriter
+CMOOSApp
+\family default
+.
+ Also note that the switches like 
+\family typewriter
+--moos_name
+\family default
+ are handled automatically for you.
+ If this is a surprise read section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Common-Command-Line"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+The way in which in this example 
+\family typewriter
+SetIterateMode
+\family default
+ is used to make the application respond quickly to the reception of mail.
+\end_layout
+
+\end_body
+\end_document

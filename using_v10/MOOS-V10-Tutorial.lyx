@@ -1127,11 +1127,72 @@ Basic MOOS Concepts
 
 \begin_layout Standard
 Before we start writing some code, we need to cover some basics.
- If you are already a MOOS users you can skipt to the next section.
+ If you are already a MOOS users you can skip to the next section.
 \end_layout
 
 \begin_layout Subsection
-The MOOSDB
+The 
+\family typewriter
+MOOSDB
+\end_layout
+
+\begin_layout Standard
+This is a program which coordinates all the communications beween any and
+ all programs using the MOOS communication facility.
+ You typically run MOODSB
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+I wish I had not called it MOOSDB - of the DB because that brings with it
+ a whole load of connotations of heavyweight databases.
+ But this is a case of horse stable and bolted.
+\end_layout
+
+\end_inset
+
+ from the command line.
+ Having started it you can safely leave it running for ever - you don't
+ need to interact with it in any way.
+ Its not a bad idea to set it up as a daemon.
+ The MOOSDB does have some command line switches and you can read about
+ them in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Configuring-MOOSDB"
+
+\end_inset
+
+ - but for now simply running .
+\family typewriter
+/MOOSDB
+\family default
+ will start it running with a very useable set of defaults.
+\end_layout
+
+\begin_layout Standard
+You should think of the 
+\family typewriter
+MOOSDB
+\family default
+ as a program containing a list of named variables which in concert represent
+ the state of your system.
+ As a user of MOOS your applications can push data to the 
+\family typewriter
+MOOSDB
+\family default
+ and have data sent to them in response to some other application pushing
+ data.
+ You can request to be told about every push or limit it to no more than
+ once every 
+\begin_inset Formula $\tau$
+\end_inset
+
+ seconds where 
+\begin_inset Formula $\tau$
+\end_inset
+
+ is a value or your choosing.
 \end_layout
 
 \begin_layout Subsection
@@ -1141,13 +1202,13 @@ CMOOSMsg
 \end_layout
 
 \begin_layout Standard
-The fundamental data type which MOOS sends between processes is a 
+The data which MOOS sends between processes is wrapped in a 
 \family typewriter
 CMOOSMsg.
  
 \family default
 You will ultimately, pehaps behind the scenes in an API call, package your
- data be that string, double or a chunk of binary data in a CMOOSMsg.
+ data, be that string, double or a chunk of binary data, in a CMOOSMsg.
  Sometimes we refer to the delivery or transmission of one or more CMOOSMsg
  as getting or sending 
 \begin_inset Quotes eld
@@ -1163,8 +1224,54 @@ Mail
  Luckily the opposite is true in MOOS.
 \end_layout
 
+\begin_layout Standard
+You should think of a CMOOSMsg as a communique about a named lump of data.
+ This data could be a double floating point value, a string or a binary
+ chunk - it all depends on client who perfomed the first push of this named
+ data to the MOOSDB - after that its type is set in stone.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+How do I know what the payload of a CMOOSMsg is?
+\end_layout
+
+\begin_layout Standard
+Good question.
+ If you are processing a CMOOSMsg in you code it is because you have requested
+ to be informed when that data has been updated.
+ So this means you must have had a conversation with the author of the program
+ that is doing the pushing (maybe even in your own head) so you are likely
+ to know for example that a variable called 
+\begin_inset Quotes eld
+\end_inset
+
+LeftImage
+\begin_inset Quotes erd
+\end_inset
+
+ is a binary lump, or 
+\begin_inset Quotes eld
+\end_inset
+
+battery_percentage
+\begin_inset Quotes erd
+\end_inset
+
+ is a double.
+ However if you are not sure you can use the methods 
+\family typewriter
+IsDouble() IsString() IsBinary().
+\end_layout
+
 \begin_layout Subsection
-Comms Clients CMOOSCommClient and MOOS::AsyncCommClient
+Comms Clients 
+\family typewriter
+CMOOSCommClient
+\family default
+ and 
+\family typewriter
+MOOS::AsyncCommClient
 \end_layout
 
 \begin_layout Standard
@@ -1302,6 +1409,10 @@ sVarName
 \end_layout
 
 \begin_layout Subsubsection
+Grabbing Mail with Fetch
+\end_layout
+
+\begin_layout Subsubsection
 Configuring Notfications with 
 \family typewriter
 SetOnMailCallBack
@@ -1340,7 +1451,15 @@ Programming with MOOS Clients
 \end_layout
 
 \begin_layout Subsection
-The simplest example - using a raw client
+The Hello World example
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Subsection
+Installing a Mail callback
 \end_layout
 
 \begin_layout Standard
@@ -1691,6 +1810,366 @@ status open
 \backslash
 lstinputlisting[caption={A simple example using MOOSAsyncCommClient}]{examples/A
 ppExample/AppExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Configuring 
+\family typewriter
+MOOSDB
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Configuring-MOOSDB"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Command Line Help
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+MOOSDB
+\family default
+ offers a command line interface which allows you to set the port it is
+ serving on and various other configurations.
+ All are accessed via 
+\family typewriter
+./MOOSDB --help
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+>>pmn@mac  ./MOOSDB --help
+\end_layout
+
+\begin_layout Plain Layout
+
+MOOSDB command line help:
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_file=<string>                  specify mission file name 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_port=<positive_integer>        specify server port number  
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_timewarp= <positive_float>     specify time warp 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_community=<string>             specify community name 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_timeout=<positive_float>       specify client timeout 
+\end_layout
+
+\begin_layout Plain Layout
+
+--response=<string-list>			  specify client response times <name:response_ms,...>
+\end_layout
+
+\begin_layout Plain Layout
+
+--warn_latency=<positive_float>       specify latency above which warning
+ is issued in ms
+\end_layout
+
+\begin_layout Plain Layout
+
+--webserver_port=<positive_integer>   run webserver on given port 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+--tcpnodelay                          disable nagle algorithm 
+\end_layout
+
+\begin_layout Plain Layout
+
+-s (--single_threaded)                run as a single thread 
+\end_layout
+
+\begin_layout Plain Layout
+
+-d (--dns)                            run with dns lookup 
+\end_layout
+
+\begin_layout Plain Layout
+
+-b (--moos_boost)                     boost priority of communications
+\end_layout
+
+\begin_layout Plain Layout
+
+-h (--help)                           print help and exit
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Configuring Client Response Times
+\end_layout
+
+\begin_layout Standard
+The MOOSDB has some inbuilt security controls that are designed to prevent
+ a rogue, ill mannered client to hog resources.
+ It seems improper that a random client joining a community can decide to
+ send 10 million messages persecond and because of that, reduce the performance
+ of other clients.
+ On the other hand it seems inappropriate to disallow all clients for all
+ time very rapid performance simply because of a percieved risk.
+ The solution offered in MOOS-V10 is that the MOOSDB by default offers premiums
+ service to all comers 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if they are using the AsyncComms
+\end_layout
+
+\end_inset
+
+ - in other words every client will be serviced as soon as possible and
+ all clients will be have data pushed to them as soon as possible.
+ However the launcher of the 
+\family typewriter
+MOOSDB
+\family default
+ may choose to restrict response times for clients- this has the effect
+ of having each transaction with the DB contain more indvidual messages
+ and prevents rogue clients being disruptive.
+ Even introducing a repsonse time of 10ms can have a marked increase in
+ performance for a very heavily loaded system.
+ It is also possible to control which clients should be throttled and which
+ should not.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=*:20
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=VisualOdometry:10
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=Camera??:10,VisualOdometry:10,*:20
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, the first example sets all clients to have a minimum reposnse
+ time of 20ms.
+ The second example expicitly sets a client called 
+\family typewriter
+VisualOdometry 
+\family default
+to have a 10ms response while all others have the default of 0ms (instant
+ response).
+ The final example has any client whos name begins with 
+\begin_inset Quotes eld
+\end_inset
+
+Camera
+\begin_inset Quotes erd
+\end_inset
+
+ followed by two characters set to 10ms and 
+\family typewriter
+VisualOdometry
+\family default
+ at 10ms and every other client at 20ms.
+\end_layout
+
+\begin_layout Subsection
+Specifying When Clients are Assumed Dead
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+MOOSDB
+\family default
+ has alway been suspicious of clients that unexpectedly go quiet (the comms
+ thread, which operates behind the scenes, stops working) and it will disconnect
+ them.
+ However its pretty annoying if you are debugging an application and because
+ you could not solve you problem in 5 seconds, the DB disconnects your applicati
+on and so differnt behaviour is invoked while debugging (the app will try
+ to reconnect as soon the debugger sets teh application free).
+ In V10, 
+\family typewriter
+MOOSDB
+\family default
+ has the 
+\family typewriter
+--moos_timeout
+\family default
+ option which allows you to specify the time in seconds the DB should tolerate
+ a silent client.
+ Set this to a big number when you are debugging.
+\end_layout
+
+\begin_layout Subsection
+Live Network Audit
+\end_layout
+
+\begin_layout Standard
+Sometimes its nice to quickly get a summary of the network performance of
+ the MOOSDB and the clients it supports.
+ The MOOS V10 DB supports a very lightweight way to see how things are going.
+ When the DB starts you'll see it print out something like 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+network performance data published on localhost:9090 listen with "nc -u
+ -lk 9090" 
+\begin_inset Quotes erd
+\end_inset
+
+.
+ 
+\family default
+So if you follow this advice and in a terminal start 
+\family typewriter
+netcat (which is the 
+\begin_inset Quotes eld
+\end_inset
+
+nc
+\begin_inset Quotes erd
+\end_inset
+
+ command)
+\family default
+ listening on port 9090 it will receive UDP packets which contain performance
+ data.
+ Here is an example output - don't be put off by the fact that the client
+ names are actually numbers in this case - that just happens to be the naming
+ scheme this community was running.
+ The network summary packet is sent once a second and contains valid statistics
+ for that last second.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+  client name   pkts in  pkts out  msgs in  msgs out   B/s in  B/s out
+\end_layout
+
+\begin_layout Plain Layout
+
+         0        20        17      20	  20		  1207      1227
+\end_layout
+
+\begin_layout Plain Layout
+
+         1        19        19      19	  19		  1216      2177
+\end_layout
+
+\begin_layout Plain Layout
+
+     total        39        36      39      39		  2423	  3404
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset

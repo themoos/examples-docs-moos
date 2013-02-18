@@ -8,12 +8,12 @@ endif(COMMAND cmake_policy)
 
 
 #this builds an example program
-set(EXECNAME comms_example)
+set(EXECNAME ex20)
 
 find_package(MOOS 10)
 
 #what files are needed?
-SET(SRCS CommsExample.cpp)
+SET(SRCS ex20.cpp)
 
 include_directories(  ${MOOS_INCLUDE_DIRS} ${MOOS_DEPEND_INCLUDE_DIRS})
 add_executable(${EXECNAME} ${SRCS} )

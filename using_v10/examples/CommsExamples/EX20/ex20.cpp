@@ -25,7 +25,7 @@ int main(int argc, char * argv[]){
 	Comms.SetOnConnectCallBack(OnConnect,&Comms);
 
 	//start the comms running
-	Comms.Run(db_host,db_port,my_name);
+	Comms.Run("localhost",9000,"EX20");
 
 	for(;;){
 		MOOSPause(1000);

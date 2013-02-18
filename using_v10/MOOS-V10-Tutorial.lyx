@@ -37,7 +37,7 @@ language=matlab,
         breaklines=true,
         framesep=10pt,
         prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
-        %frame=single,
+        frame=single,
         showtabs=false,
         showspaces=false,
         showstringspaces=false,
@@ -648,7 +648,7 @@ name "fig:running-the-new-db"
 
 \end_inset
 
-running the new MOOSDB
+running the  MOOSDB
 \end_layout
 
 \end_inset
@@ -753,16 +753,17 @@ the swiss army knife of MOOS.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
+\begin_inset Wrap figure
+lines 0
+placement o
+overhang 0in
+width "30col%"
 status open
 
 \begin_layout Plain Layout
-\align center
 \begin_inset Graphics
 	filename images/structure.pdf
-	width 50col%
+	width 30col%
 
 \end_inset
 
@@ -773,7 +774,7 @@ status open
 Top-le
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:Top-level-directory-structure"
+name "fig:Top-level-directory-structure-1"
 
 \end_inset
 
@@ -782,6 +783,10 @@ vel directory structure for MOOS V10
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1455,6 +1460,24 @@ The Hello World example
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient and
+ polling for mail}, label={code:CommsBareBones} ]{examples/CommsExamples/EX10/ex
+10.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
@@ -1498,7 +1521,7 @@ status open
 
 \backslash
 lstinputlisting[caption={A simple example using MOOSAsyncCommClient}, label={cod
-e:CommsBareBones} ]{examples/CommsExample/CommsExampleBareBones.cpp}
+e:CommsBareBones} ]{examples/CommsExamples/EX20/ex20.cpp}
 \end_layout
 
 \end_inset
@@ -1539,7 +1562,7 @@ status open
 
 \backslash
 lstinputlisting[caption={A fuller example using MOOSAsyncCommClient}, label={cod
-e:CommsExample}]{examples/CommsExample/CommsExample.cpp}
+e:CommsExample}]{examples/CommsExamples/EX30/ex30.cpp}
 \end_layout
 
 \end_inset
@@ -1590,7 +1613,7 @@ status open
 
 \backslash
 lstinputlisting[caption={CMakeLists.txt to the simple example above}, label={code
-:CommsExampleCMake}]{ examples/CommsExample/CMakeLists.txt }
+:CommsExampleCMake}]{ examples/CommsExamples/EX30/CMakeLists.txt }
 \end_layout
 
 \end_inset
@@ -1847,20 +1870,6 @@ MOOSDB
 \end_layout
 
 \begin_layout Standard
-\begin_inset Box Doublebox
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
 \begin_inset listings
 inline false
 status open
@@ -1943,11 +1952,6 @@ MOOSDB command line help:
 \begin_layout Plain Layout
 
 -h (--help)                           print help and exit
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -2128,21 +2132,6 @@ nc
 \end_layout
 
 \begin_layout Standard
-\align center
-\begin_inset Box Doublebox
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
 \begin_inset listings
 inline false
 status open
@@ -2165,11 +2154,6 @@ status open
 \begin_layout Plain Layout
 
      total        39        36      39      39		  2423	  3404
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset

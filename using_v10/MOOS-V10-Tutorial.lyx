@@ -1324,15 +1324,15 @@ Collecting Mail with Fetch
 \end_layout
 
 \begin_layout Subsubsection
-Starting 
+Starting communications with
 \family typewriter
-Run
+ Run
 \end_layout
 
 \begin_layout Subsection
 Application Writing with 
 \family typewriter
-CMOOSApp`
+CMOOSApp
 \end_layout
 
 \begin_layout Section
@@ -1497,6 +1497,179 @@ Adding Multiple Callbacks
 
 \begin_layout Subsection
 Adding Threaded Channels
+\end_layout
+
+\begin_layout Subsection
+Wildcard Subscriptions
+\end_layout
+
+\begin_layout Standard
+MOOS-V10 offers a great deal of flexibilty in which clients can subscribe
+ for data by allowing so called 
+\begin_inset Quotes eld
+\end_inset
+
+wildcard subscriptions
+\begin_inset Quotes erd
+\end_inset
+
+.
+ A client can register its interest in variable whose name and source matches
+ a simple regex pattern.
+ Only patterns containing * and ? wildcards are supported with their usual
+ meanings i.e.
+ '?' means any single character and '*' means any number of characters.
+ An example will make this whole thing clear and we will be using the 
+\family typewriter
+Register( sVarPattern, sAppPattern,dfInterval) 
+\family default
+interface.
+ Imagine we have a Comm Client object called 
+\family typewriter
+CommsObject
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    //register for all variables ending with "image"
+\end_layout
+
+\begin_layout Plain Layout
+
+	//from any process with an name beginning with "camera_"
+\end_layout
+
+\begin_layout Plain Layout
+
+	CommsObject.Register("*image","camera_*", 0.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for every single variable coming from a process
+\end_layout
+
+\begin_layout Plain Layout
+
+	//called "system_control"
+\end_layout
+
+\begin_layout Plain Layout
+
+	CommsObject.Register("*","sytem_control",0.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for any variable beginning with "error_" and 
+\end_layout
+
+\begin_layout Plain Layout
+
+	//produced by a process with a nine letter name beginning
+\end_layout
+
+\begin_layout Plain Layout
+
+	//with "process_0" but please, only tell us at most twice
+\end_layout
+
+\begin_layout Plain Layout
+
+	//a second
+\end_layout
+
+\begin_layout Plain Layout
+
+	CommsObject.Register("error_*","process_0?", 2.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+	return true;
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Using wildcard registration via the 
+\family typewriter
+Register
+\family default
+ method
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The logic which supports this new functionality is implemented at the MOOSDB
+ and turns out to be a pretty useful and compact way to define some fine
+ granularity on what data is received.
+ Of course it can also be used to achieve blunderbuss subscriptions by subscribi
+ng to all variables from a given process - 
+\family typewriter
+Register(
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+,ProcessName) 
+\family default
+- or even all variables from all processes - 
+\family typewriter
+Register(
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+)
+\family default
+ the ultimate wildcard.
+ 
 \end_layout
 
 \begin_layout Section

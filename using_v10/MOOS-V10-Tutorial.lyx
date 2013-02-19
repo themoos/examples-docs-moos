@@ -584,7 +584,7 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -625,16 +625,17 @@ vspace{5mm}
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
+\begin_inset Wrap figure
+lines 0
+placement o
+overhang 0in
+width "40col%"
 status open
 
 \begin_layout Plain Layout
-\align center
 \begin_inset Graphics
 	filename images/MOOSDBRunning.pdf
-	width 50col%
+	width 40col%
 
 \end_inset
 
@@ -648,7 +649,7 @@ name "fig:running-the-new-db"
 
 \end_inset
 
-running the  MOOSDB
+running the MOOSDB
 \end_layout
 
 \end_inset
@@ -1198,6 +1199,59 @@ MOOSDB
 \end_inset
 
  is a value or your choosing.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/MOOSDBandClients.pdf
+	width 90col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+the simplest of MOOS communities - a DB and two programs which communicate
+ with each other (share data).
+ The red circles represent an instance of a CommsClient object.
+ Note how the DB acts as a communications hub.
+ We often refer to program A and program B as 
+\begin_inset Quotes eld
+\end_inset
+
+clients
+\begin_inset Quotes erd
+\end_inset
+
+.
+ There is no restriction of the number of clients a community can have and
+ they can live on as many different computers as there are clients.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection

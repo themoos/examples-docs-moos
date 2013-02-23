@@ -34,7 +34,7 @@ int main(int argc, char * argv[]){
 	int db_port=9000;
 	P.GetVariable("--moos_port",db_port);
 
-	std::string my_name ="exampleA";
+	std::string my_name ="ex30";
 	P.GetVariable("--moos_name",my_name);
 
 	//configure the comms

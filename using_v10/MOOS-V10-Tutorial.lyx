@@ -1181,7 +1181,7 @@ You should think of the
 \family typewriter
 MOOSDB
 \family default
- as a program containing a list of named variables which in concert represent
+ as a program containing a list of named variables which, in concert, represent
  the state of your system.
  As a user of MOOS your applications can push data to the 
 \family typewriter
@@ -1297,8 +1297,16 @@ How do I know what the payload of a CMOOSMsg is?
 
 \begin_layout Standard
 Good question.
- If you are processing a CMOOSMsg in you code it is because you have requested
- to be informed when that data has been updated.
+ If you are processing a CMOOSMsg in your code it is because you have requested
+ to be informed when that data has been updated (you do this by calling
+ ::register from your code - see Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Configuring-Mail-Delivery"
+
+\end_inset
+
+) .
  So this means you must have had a conversation with the author of the program
  that is doing the pushing (maybe even in your own head) so you are likely
  to know for example that a variable called 
@@ -1339,42 +1347,64 @@ The term comms client is used to refer to an c++ object which you as a developer
  The object handles all of the details of managing the connection to the
  DB all you have to do is push data into it and using one of more of the
  API's get one or more (always in a std::list) of CMOOSMsgs out of it.
- There are to kinds of comms clients available:
+
+\series medium
+ There are some key methods offered by the comms clients which you need
+ to know about and these will be covered in upcoming sections.
+ But before we do that you should know that there are two kinds of comms
+ clients - one old one new:
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 MOOS::AsyncCommClient 
 \end_layout
 
 \begin_layout Standard
 This is the one you should use and was introduced in MOOS-V10 in 2013.
  It offers the fastest (lowest latency) way of getting data between applications.
+ It manages two queues - one for outgoing messages and one for incomming
+ messages and they run independently.
+ Of course you as a user don't get to see this.
+ As far as you are concerned a comms client is a portal into which you pour
+ outgoing messages and receive them from
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 CMOOSCommClient 
 \end_layout
 
 \begin_layout Standard
-this is the orginal client written in 2003 when MOOS was in its infancy.
+This is the orginal client written in 2003 when MOOS was in its infancy.
  You can use it of course and it is after all the base class of MOOS::AsyncCommC
 lient but if you do, you will be missing out on many good things.
+ This client has a single thread managing communications in the background
+ - input is coupled to output.
 \end_layout
 
-\begin_layout Description
+\begin_layout Standard
+The following few sub sections will introduce you to small set of methods
+ (functions) which you will need to know about to use MOOS.
+ After that we'll bring them all together in some simple examples.
+ The thinking is its a good idea to get the right nouns installed before
+ getting going.
+ Of course if you prefer you can jump straight to the examples in Section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Programming-with-MOOS"
 
-\series medium
-There are some key methods offered by the comms clients which you need to
- know about
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
 Sending Data with Notify
 \end_layout
 
-\begin_layout Description
-Notify use this method and its overides to send either double, std::string
- or binary data of any size.
+\begin_layout Standard
+use this method and its overides to send either double, std::string or binary
+ data of any size.
  The overloaded versions 
 \end_layout
 
@@ -1469,34 +1499,76 @@ sVarName
 
 \begin_layout Subsubsection
 Grabbing Mail with Fetch
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Grabbing-Mail-with"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
 Configuring Notfications with 
 \family typewriter
 SetOnMailCallBack
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Configuring-Notfications-with"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
 Configuring Connection Notification with 
 \family typewriter
 SetOnConnectCallBack
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Configuring-Connection-Notificat"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
 Configuring Mail Delivery with 
 \family typewriter
 Register
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Configuring-Mail-Delivery"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
 Collecting Mail with Fetch
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Collecting-Mail-with"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
 Starting communications with
 \family typewriter
  Run
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Starting-communications-with"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1507,6 +1579,13 @@ CMOOSApp
 
 \begin_layout Section
 Programming with MOOS Clients
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Programming-with-MOOS"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1666,8 +1745,8 @@ status open
 
 
 \backslash
-lstinputlisting[caption={CMakeLists.txt to the simple example above}, label={code
-:CommsExampleCMake}]{ examples/CommsExamples/EX30/CMakeLists.txt }
+lstinputlisting[caption={CMakeLists.txt for the simple example above}, label={cod
+e:CommsExampleCMake}]{ examples/CommsExamples/EX30/CMakeLists.txt }
 \end_layout
 
 \end_inset
@@ -1688,11 +1767,68 @@ While this is a simple design it is not the best plan - it opens the door
 \end_layout
 
 \begin_layout Subsection
-Adding Multiple Callbacks
+Adding Threaded Message Channels
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={Installing a per-message callback}, label={code:CommsEx
+ampleCMake}]{ examples/CommsExamples/EX40/ex40.cpp}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Adding Threaded Channels
+Threading Model
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/AsyncCommsThreading.pdf
+	width 80col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The threading model of the AsyncCommClient.
+ Things to note are...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection

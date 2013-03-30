@@ -3,49 +3,6 @@
 \begin_document
 \begin_header
 \textclass article
-\begin_preamble
-\usepackage{verbatim}
-%\usepackage{xcolor}
-\usepackage{listings}
-\lstdefinestyle{Bash}
-{language=bash,
-keywordstyle=\color{blue},
-basicstyle=\ttfamily,
-morekeywords={moosuser@machine},
-alsoletter={:~$},
-morekeywords=[2]{moosuser@machine:},
-keywordstyle=[2]{\color{red}},
-literate={\$}{{\textcolor{red}{\$}}}1 
-         {:}{{\textcolor{red}{:}}}1
-         {~}{{\textcolor{red}{\textasciitilde}}}1,
-}
-
-\usepackage[usenames,dvipsnames]{xcolor}
-
-\usepackage{listings}
-
-\lstset{
-tabsize=4,
-language=matlab,
-        basicstyle=\footnotesize,
-        %upquote=true,
-        aboveskip={1.5\baselineskip},
-        columns=fixed,
-        showstringspaces=false,
-        extendedchars=true,
-        breaklines=true,
-        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
-frame=single,
-        showtabs=false,
-        showspaces=false,
-        showstringspaces=false,
-        identifierstyle=\ttfamily,
-        keywordstyle=\color[rgb]{0,0,1},
-        commentstyle=\color[rgb]{0.133,0.545,0.133},
-        stringstyle=\color[rgb]{0.627,0.126,0.941},
-language=c++
-}
-\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -68,7 +25,6 @@ language=c++
 \bibtex_command default
 \index_command default
 \paperfontsize default
-\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -1652,6 +1608,22 @@ don't forget to put single quotes around the routing directives to prevent
 
 \end_layout
 
+\begin_layout Subsubsection
+Wildcard Sharing
+\end_layout
+
+\begin_layout Standard
+It won't have escaped your attention that MOOS-V10 offers support for wildcardin
+g -that is specifying a pattern which represents a whole set of named variables
+ (so for example `*' means all variables because the regular expressions
+ character `*' matches all sets of characters).
+ 
+\family typewriter
+pShare 
+\family default
+can utilise this functionality to make sharing many variables trivial.
+\end_layout
+
 \begin_layout Subsection
 Configuring pShare from a .moos file
 \end_layout
@@ -1717,68 +1689,108 @@ multicast_X
 \begin_layout Description
 Input which can have the same dense format as the -i flag on the command
  line as described above or a more verbose, intuitive form illustrated below.
- In the long hand version you use a single token value pair with a token
- name of 
-\begin_inset Quotes eld
-\end_inset
-
-
-\series bold
-route
-\series default
-
-\begin_inset Quotes erd
-\end_inset
-
- as described above.
- This specifies the fashion in which this instance of pShare should listen
- - be that on mulitple ports for udp traffic or on a multicast channel for
- multicast action.
 \end_layout
 
 \begin_layout Standard
-\begin_inset ERT
+\begin_inset listings
+inline false
 status open
 
 \begin_layout Plain Layout
 
-
-\backslash
-lstinputlisting[caption={Configuring pShare from a configuration block}]{example
-s/pShare.moos}
+ProcessConfig=pShare
 \end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Wildcard Sharing
-\end_layout
-
-\begin_layout Standard
-It won't have escaped your attention that MOOS-V10 offers support for wildcardin
-g -that is specifying a pattern which represents a whole set of named variables
- (so for example `*' means all variables because the regular expressions
- character `*' matches all sets of characters).
- 
-\family typewriter
-pShare 
-\family default
-can utilise this functionality to make sharing many variables trivial.
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
 
 \begin_layout Plain Layout
 
+{
+\end_layout
 
-\backslash
-lstinputlisting[caption={Configuring pShare from a configuration block}]{example
-s/pShareWild.moos}
+\begin_layout Plain Layout
+
+	//a verbose way of sharing X, calling it Y and sending on mulitcast_8
+\end_layout
+
+\begin_layout Plain Layout
+
+	Output = src_name =X,dest_name=Z,route=multicast_8
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//a verbose way of sharing Y calling it YY and sending it to port 9832
+ on this machine
+\end_layout
+
+\begin_layout Plain Layout
+
+	Output = src_name =Y, dest_name = YY, route=localhost:9832:udp
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//a verbose way of sharing T, sending it without name change
+\end_layout
+
+\begin_layout Plain Layout
+
+	//to port 9832 on a remote machine
+\end_layout
+
+\begin_layout Plain Layout
+
+	Output = src_name =T, dest_name = YY, route=localhost:9832:udp
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//a dense specification which sends X to port 10000 via udp on a remote
+ machine
+\end_layout
+
+\begin_layout Plain Layout
+
+	//and Y to a different machine while renaming it to 'T'
+\end_layout
+
+\begin_layout Plain Layout
+
+	Output  = X->192.168.0.4:10000:udp , Y->T:192.168.0.5:10000:udp
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//specify in what places we wish to listen to re
+\end_layout
+
+\begin_layout Plain Layout
+
+	Input = multi
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset

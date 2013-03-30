@@ -1,0 +1,44 @@
+
+ProcessConfig=pShare
+{
+	//a verbose way of sharing X, calling it Y and sending
+	//on mulitcast_8
+	Output = src_name =X,dest_name=Z,route=multicast_8
+
+	//a verbose way of sharing Y calling it YY and sending
+	//it to port 9832 on this machine
+	Output = src_name =Y, dest_name = YY, route=192.6.8.3:9832
+
+	//a verbose way of sharing T, sending it without name change
+	//to port 9832 on a remote machine
+	Output = src_name =T, dest_name = TT, route=192.3.4.5:9832
+
+	//a dense specification which sends X to port 10000 via
+	//udp on a remote machine
+	//and Y to a different machine while renaming it to 'T'
+	Output = X->192.168.0.4:10000:udp,Y->T:192.168.0.5:10000:udp
+
+	//specify in what places we wish to listen to receive
+	//the output of other instances of pShare
+
+	//we can do this one at a time using the route directive
+	Input = route=multicast_6
+
+	//or we can specifiy multiple routes at once. Note that
+	//we have to use an & character to separate different routes
+	//or it looks like a list of mal-formed token value pairs
+	Input =route=multicast_21&localhost:9833&multicast_3
+
+
+	//we can of course also use wildcards - this is where it gets interesting
+	//lets share any varialble in community which is 2 charcters long and begins
+	//with X
+	Output = src_name = X?, route = localhost:9021
+
+	//we could be more specific and say we only want to share such variables from
+	//a named process. So here we say only share two letter variables beginning with Q
+	//form a process called procA
+	Output = src_name = Q?:procA, route = localhost:9021
+
+
+}

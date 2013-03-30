@@ -1652,6 +1652,22 @@ don't forget to put single quotes around the routing directives to prevent
 
 \end_layout
 
+\begin_layout Subsubsection
+Wildcard Sharing
+\end_layout
+
+\begin_layout Standard
+It won't have escaped your attention that MOOS-V10 offers support for wildcardin
+g -that is specifying a pattern which represents a whole set of named variables
+ (so for example `*' means all variables because the regular expressions
+ character `*' matches all sets of characters).
+ 
+\family typewriter
+pShare 
+\family default
+can utilise this functionality to make sharing many variables trivial.
+\end_layout
+
 \begin_layout Subsection
 Configuring pShare from a .moos file
 \end_layout
@@ -1753,36 +1769,7 @@ s/pShare.moos}
 
 \end_layout
 
-\begin_layout Subsection
-Wildcard Sharing
-\end_layout
-
 \begin_layout Standard
-It won't have escaped your attention that MOOS-V10 offers support for wildcardin
-g -that is specifying a pattern which represents a whole set of named variables
- (so for example `*' means all variables because the regular expressions
- character `*' matches all sets of characters).
- 
-\family typewriter
-pShare 
-\family default
-can utilise this functionality to make sharing many variables trivial.
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-lstinputlisting[caption={Configuring pShare from a configuration block}]{example
-s/pShareWild.moos}
-\end_layout
-
-\end_inset
-
 
 \end_layout
 

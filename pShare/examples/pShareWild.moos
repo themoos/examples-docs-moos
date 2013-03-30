@@ -1,0 +1,13 @@
+ProcessConfig = pShare
+{
+
+        //we can of course also use wildcards - this is where it gets interesting
+        //lets share any varialble in community which is 2 charcters long and begins
+        //with X
+        Output = src_name = X?, route = localhost:9021
+
+        //we could be more specific and say we only want to share such variables from
+        //a named process. So here we say only share two letter variables beginning with Q
+        //form a process called procA
+        Output = src_name = Q?:procA, route = localhost:9021
+}

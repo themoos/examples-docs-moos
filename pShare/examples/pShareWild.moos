@@ -10,4 +10,8 @@ ProcessConfig = pShare
         //a named process. So here we say only share two letter variables beginning with Q
         //form a process called procA
         Output = src_name = Q?:procA, route = localhost:9021
+
+	//we can be more general and send any variable beginning with W fomr a process
+	//whos name ends in A to multicast channel 7
+	Output = src_name = W*:*A, route = multicast_7
 }

@@ -16,7 +16,8 @@ ProcessConfig=pShare
 	//a dense specification which sends X to port 10000 via
 	//udp on a remote machine
 	//and Y to a different machine while renaming it to 'T'
-	Output = X->192.168.0.4:10000:udp,Y->T:192.168.0.5:10000:udp
+	Output = X->192.168.0.4:10000
+	output = Y->T:192.168.0.5:10000
 
 	//specify in what places we wish to listen to receive
 	//the output of other instances of pShare

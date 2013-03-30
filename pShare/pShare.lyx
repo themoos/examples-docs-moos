@@ -20,6 +20,9 @@ literate={\$}{{\textcolor{red}{\$}}}1
          {~}{{\textcolor{red}{\textasciitilde}}}1,
 }
 
+\usepackage{colortbl}
+\definecolor{bkg}{rgb}{0.95, 0.95, 0.95}
+
 \usepackage[usenames,dvipsnames]{xcolor}
 
 \usepackage{listings}
@@ -109,6 +112,15 @@ Bridging MOOS Communities with
 pShare
 \family default
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -387,7 +399,7 @@ name "fig:multi-share"
 \end_layout
 
 \begin_layout Subsection
-Configuring Sharing
+Different Ways Sharing
 \end_layout
 
 \begin_layout Standard
@@ -439,8 +451,8 @@ reference "sub:Example-Configurations"
  Before that it is worth explaining the merit of multicast channels.
 \end_layout
 
-\begin_layout Subsubsection
-Multicast Channels
+\begin_layout Subsection
+Sharing via Multicast Channels
 \end_layout
 
 \begin_layout Standard
@@ -476,7 +488,7 @@ pShare
  instances can subscribe to this channel and receive them.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Section
 The form of command line configuration strings
 \end_layout
 
@@ -484,7 +496,11 @@ The form of command line configuration strings
 The '-o' switch allows you to configure which messages to forward, how to
  rename them and where to send them.
  At its highest level the the '-o' switch is followed by a comma separated
- list of mappings: 
+ list of 
+\end_layout
+
+\begin_layout Description
+mappings: 
 \begin_inset Quotes eld
 \end_inset
 
@@ -498,7 +514,11 @@ The '-o' switch allows you to configure which messages to forward, how to
 
  and each mapping describes how one MOOS variable is routed to any number
  of destinations.
- Each mapping has the form of 
+ Each mapping contains mulitple...
+\end_layout
+
+\begin_layout Description
+routes and has the form of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -519,14 +539,17 @@ routes
 \end_inset
 
 .
- Each route describes a destination for a message and it has the format
- 
+ Each route describes a...
+\end_layout
+
+\begin_layout Description
+destination for a message and it has the format 
 \family typewriter
 
 \begin_inset Quotes eld
 \end_inset
 
-new_name:destination_address:destination_port:udp
+new_name:destination_address:destination_port
 \begin_inset Quotes erd
 \end_inset
 
@@ -614,8 +637,8 @@ name "fig:output_format"
 
 \end_layout
 
-\begin_layout Subsubsection
-Example Command line Configurations
+\begin_layout Section
+Command line Configurations
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Example-Configurations"
@@ -651,8 +674,8 @@ vspace{5mm}
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="2">
 <features tabularvalignment="middle">
-<column alignment="left" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0pt">
+<column alignment="left" valignment="top" width="0pt">
 <row>
 <cell alignment="left" valignment="top" usebox="none">
 \begin_inset Text
@@ -693,7 +716,7 @@ terminal A command line
 
 \family typewriter
 \size footnotesize
--o='X->192.168.0.4:10000:udp' 
+-o='X->192.168.0.4:10000' 
 \end_layout
 
 \end_inset
@@ -791,7 +814,7 @@ terminal A command line
 
 \family typewriter
 \size footnotesize
--o='X->Y:192.168.0.4:10000:udp'
+-o='X->Y:192.168.0.4:10000'
 \end_layout
 
 \end_inset
@@ -889,7 +912,7 @@ terminal A command line
 
 \family typewriter
 \size footnotesize
--o='X->92.168.0.4:10000:udp & Y:192.168.0.4:10000:udp'
+-o='X->92.168.0.4:10000 & Y:192.168.0.4:10000'
 \end_layout
 
 \end_inset
@@ -987,7 +1010,7 @@ terminal A command line
 
 \family typewriter
 \size footnotesize
--o='X->92.168.0.4:10000:udp & Y:192.168.0.4:20000:udp'
+-o='X->92.168.0.4:10000 & Y:192.168.0.4:20000'
 \end_layout
 
 \end_inset
@@ -1085,7 +1108,7 @@ terminal A command line
 
 \family typewriter
 \size footnotesize
--o='X->192.168.0.4:10000:udp , Y->192.168.0.4:10000:udp'
+-o='X->192.168.0.4:10000 , Y->192.168.0.4:10000'
 \end_layout
 
 \end_inset
@@ -1652,7 +1675,7 @@ don't forget to put single quotes around the routing directives to prevent
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Configuring pShare from a .moos file
 \end_layout
 
@@ -1753,20 +1776,789 @@ s/pShare.moos}
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Wildcard Sharing
 \end_layout
 
 \begin_layout Standard
 It won't have escaped your attention that MOOS-V10 offers support for wildcardin
-g -that is specifying a pattern which represents a whole set of named variables
- (so for example `*' means all variables because the regular expressions
- character `*' matches all sets of characters).
+g -that is specifying a pattern which represents a whole set of named variables.(
+So for example `*' means all variables because the regular expressions character
+ `*' matches all sets of characters).
  
 \family typewriter
 pShare 
 \family default
 can utilise this functionality to make sharing many variables trivial.
+ You can also specify to only share variables from a specific process.
+ 
+\end_layout
+
+\begin_layout Standard
+So lets start with a command line example.
+ We can share all variables in a community thus:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+share all variables onto channel 7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal A command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-o='*->multicast_7' 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal B command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-i=multicast_7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And we can be a little more precise and only forward variables which begin
+ with the letters 
+\begin_inset Quotes eld
+\end_inset
+
+SP
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+share all variables onto channel 7 which begin with 
+\begin_inset Quotes eld
+\end_inset
+
+SP
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal A command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-o='SP*->multicast_7' 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal B command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-i=multicast_7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or which begin with 
+\begin_inset Quotes eld
+\end_inset
+
+K
+\begin_inset Quotes erd
+\end_inset
+
+ end with 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ followed by any single character
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+starting with X ending with a K plus 1 character
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal A command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-o='X*K?->multicast_7' 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal B command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-i=multicast_7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can also be explict about which processes we want to forward from.
+ So for example say we just wanted to forward messages from teh process
+ called 
+\begin_inset Quotes eld
+\end_inset
+
+GPS
+\begin_inset Quotes erd
+\end_inset
+
+:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+share all variables from 
+\begin_inset Quotes eld
+\end_inset
+
+GPS
+\begin_inset Quotes erd
+\end_inset
+
+ onto channel 7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal A command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-o='*:GPS->multicast_7' 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal B command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-i=multicast_7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And of course the process name also supports wild cards so we we can do
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+var ending in 
+\begin_inset Quotes eld
+\end_inset
+
+time
+\begin_inset Quotes erd
+\end_inset
+
+ from a proc starting 
+\begin_inset Quotes eld
+\end_inset
+
+camera_
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal A command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-o='*time:camera_*->multicast_7' 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal B command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-i=multicast_7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A good question is what does it mean to rename a wildcard share ? Well that
+ simply serves as suffix to the shared variable name
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+share all variables onto channel 7 with renaming
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal A command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-o='*->T:multicast_7' 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+terminal B command line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+-i=multicast_7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which means a variable 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ will be shared as 
+\begin_inset Quotes eld
+\end_inset
+
+TX
+\begin_inset Quotes erd
+\end_inset
+
+ - the parameter T is acting as suffix.
+ Similarly a variable called 
+\begin_inset Quotes eld
+\end_inset
+
+donkey
+\begin_inset Quotes erd
+\end_inset
+
+ would endup being shared in this example as 
+\begin_inset Quotes eld
+\end_inset
+
+Tdonkey
+\begin_inset Quotes erd
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Finally of course wildcard shares can be specified in configuration files
+ as shown below.
 \end_layout
 
 \begin_layout Standard
@@ -1784,6 +2576,75 @@ s/pShareWild.moos}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+Instigating Dynamic Shares On The Fly
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+pShare
+\family default
+ can be told to start sharing data dynamically by any MOOS Process simply
+ by publishing a correctly formatted string.
+ The format is simple - its is pretty much the same as a line in a configuration
+ file.
+ You need to write a string 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+cmd = <directive>
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\family default
+ to the variable 
+\family typewriter
+PSHARE_CMD
+\family default
+ where 
+\family typewriter
+<directive>
+\family default
+ is a output or input directive such as you would write in a configuration
+ file.
+ Here are some examples:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+cmd = Output = src_name = X?, route = localhost:9021
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+ cmd = Output = src_name =T, dest_name = TT, route=192.3.4.5:9832
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The ability to dynamically instigate shares turns out to be very useful
+ if you don't know what needs to be shared when 
+\family typewriter
+pShare
+\family default
+ first starts and that only gets figured out by other processes.
 \end_layout
 
 \end_body

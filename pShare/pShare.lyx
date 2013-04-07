@@ -114,10 +114,56 @@ pShare
  
 \end_layout
 
+\begin_layout Author
+Paul Newman, University of Oxford
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename ../using_v10/images/MOOSV-10-256.pdf
+	width 3cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{2cm}
+\end_layout
+
+\end_inset
+
+....ten years on
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -138,7 +184,7 @@ community
 \begin_inset Quotes erd
 \end_inset
 
-is a the set of programms talking to a particular instance of a 
+ is the set of programms talking to a particular instance of a 
 \family typewriter
 MOOSDB
 \family default
@@ -164,23 +210,32 @@ pShare
 \end_layout
 
 \begin_layout Itemize
-Offers UDP communication between communities
+it offers UDP communication between communities
 \end_layout
 
 \begin_layout Itemize
-Can share data over multicast channels
+it can share data over multicast channels
 \end_layout
 
 \begin_layout Itemize
-Supports wildcard forwarding and renaming of variable
+it allows renaming of variables as they are shared
 \end_layout
 
 \begin_layout Itemize
-Supports dynamic configuration (via MOOS) of sharing/forwarding/renaming
+it supports wildcard sharing - so you can specify a sinple regular expression
+ for which what should be shared
 \end_layout
 
 \begin_layout Itemize
-Supports command line configuration and from a .moos file
+it supports dynamic configuration (via MOOS) of sharing/forwarding/renaming
+\end_layout
+
+\begin_layout Itemize
+it supports command line configuration and from a .moos file
+\end_layout
+
+\begin_layout Itemize
+it can be completely configured from the command line
 \end_layout
 
 \begin_layout Standard
@@ -236,8 +291,8 @@ pShare
 \family typewriter
 pShare
 \family default
- when you want, when possible, to get messages between communities but you
- don't mind dropping a few messages.
+ when you want, when possible, to get messages between communities and yet
+ you don't mind dropping a few messages.
  Perhaps this applies when you have a deployed robot out in the wilds and
  the wireless link simply doesn't suport tcp/ip as well as you might hope.
  
@@ -276,8 +331,12 @@ Here two communities are linked by two instances of
 pShare.
  
 \family default
-Each is connected to a MOOSDB and each pShare is configured (by a means
- we will get to in a minute) to subscribe to messages from the 
+Each is connected to a 
+\family typewriter
+MOOSDB
+\family default
+ and each pShare is configured (by a means we will get to in a minute) to
+ subscribe to messages from the 
 \family typewriter
 MOOSDB
 \family default
@@ -290,6 +349,38 @@ pShare
 \family typewriter
 MOOSDB.
  
+\family default
+The important point here is that if process 
+\begin_inset Quotes eld
+\end_inset
+
+A
+\begin_inset Quotes erd
+\end_inset
+
+ in community 
+\begin_inset Quotes eld
+\end_inset
+
+P
+\begin_inset Quotes erd
+\end_inset
+
+ has message M shared via 
+\family typewriter
+pShareP
+\family default
+ and 
+\family typewriter
+pShareQ
+\family default
+ 
+\family typewriter
+to 
+\family default
+process B in community Q then when B receives M it will still have A as
+ its source and P as its source community.
+ So to process B it looks like A is actutaly in its own community (Q).
 \end_layout
 
 \begin_layout Standard
@@ -378,7 +469,8 @@ A simple use of
 \family typewriter
 pShare: 
 \family default
-two communities are linked by two instances of pShare - one in each community.
+three communities are linked by two instances of pShare - one in each community
+ but data sharing is not symmetric.
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:multi-share"
@@ -407,12 +499,12 @@ Each instance of
 \family typewriter
 pShare
 \family default
- can be configured to such that it can
+ can be configured such that it can
 \end_layout
 
 \begin_layout Itemize
 forward a named message (like 'X') to any number of specific udp ports on
- any number of machines
+ any number of other machines
 \end_layout
 
 \begin_layout Itemize
@@ -430,8 +522,7 @@ pShares
 \end_layout
 
 \begin_layout Itemize
-forward messages on predefined or any number of user defined multicast channel
- 
+forward messages on predefined or any number of multicast channels 
 \end_layout
 
 \begin_layout Itemize
@@ -492,15 +583,19 @@ pShare
 The form of command line configuration strings
 \end_layout
 
+\begin_layout Subsection
+Output
+\end_layout
+
 \begin_layout Standard
-The '-o' switch allows you to configure which messages to forward, how to
- rename them and where to send them.
+The '-o' switch allows you to configure which messages to forward (share),
+ how to rename them and where to send them.
  At its highest level the the '-o' switch is followed by a comma separated
  list of 
 \end_layout
 
 \begin_layout Description
-mappings: 
+mappings 
 \begin_inset Quotes eld
 \end_inset
 
@@ -530,7 +625,7 @@ var_name->route & route...
 \begin_inset Quotes erd
 \end_inset
 
- so a variable name pointing to an ampersand separated list of 
+ so a variable name pointing to an ampersand-separated list of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -539,7 +634,7 @@ routes
 \end_inset
 
 .
- Each route describes a...
+ Now, each route describes a...
 \end_layout
 
 \begin_layout Description
@@ -584,7 +679,7 @@ reference "sub:Example-Configurations"
 
 \end_inset
 
-
+.
 \end_layout
 
 \begin_layout Standard
@@ -637,8 +732,24 @@ name "fig:output_format"
 
 \end_layout
 
+\begin_layout Subsection
+Input
+\end_layout
+
+\begin_layout Standard
+The -i switch is much simpler.
+ It tells an instance of 
+\family typewriter
+pShare 
+\family default
+how to listen to for incoming traffic.
+ The format is always -i=localhost:<port_num> or -i=multicast_<N> where
+ N is a number between 0 and 255.
+ Multiple listens can be specified in a comma separated list.
+\end_layout
+
 \begin_layout Section
-Command line Configurations
+Command line Configuration
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Example-Configurations"

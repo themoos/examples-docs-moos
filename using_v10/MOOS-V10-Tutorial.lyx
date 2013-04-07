@@ -170,7 +170,68 @@ LatexCommand tableofcontents
 \end_layout
 
 \begin_layout Section
+How To Use This Tutorial?
+\end_layout
+
+\begin_layout Subsubsection*
+I'm a complete newbie
+\end_layout
+
+\begin_layout Standard
+You should start at section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:What-will-I-Learn"
+
+\end_inset
+
+ the tutorial will take you through downloading, building, understanding
+ and learning to program with the MOOS Library.
+\end_layout
+
+\begin_layout Subsubsection*
+I have MOOS installed already - now what?
+\end_layout
+
+\begin_layout Standard
+Maybe you have installed something like MOOS-IvP which packages MOOS for
+ you or maybe you followed installation instructions on a website.
+ In that case you can go straight to Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Header,-Source-and"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+I like to see example code straight away
+\end_layout
+
+\begin_layout Standard
+Many folk find it easiest and most comforting to look directly an example
+ source code to get a feel for what is going on.
+ If this sounds like you go to Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Programming-with-MOOS"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
 What will I learn?
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:What-will-I-Learn"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -200,7 +261,7 @@ MOOS
 \family typewriter
 core-moos
 \family default
- all in one
+ all in one.
 \end_layout
 
 \begin_layout Section
@@ -668,6 +729,13 @@ running the MOOSDB
 
 \begin_layout Subsection
 Header, Source and Library Structure
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Header,-Source-and"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1132,8 +1200,17 @@ Basic MOOS Concepts
 \end_layout
 
 \begin_layout Standard
-Before we start writing some code, we need to cover some basics.
- If you are already a MOOS users you can skip to the next section.
+Before we start writing some code, we need to cover some basic concepts.
+ However If you are already a MOOS user you can skip to the next section
+ - similarly if you like to look at working example code to learn new software
+ libraries then you should jump (temporally at least) to Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Programming-with-MOOS"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1332,7 +1409,7 @@ IsDouble() IsString() IsBinary().
 \end_layout
 
 \begin_layout Subsection
-Comms Clients 
+Using the Comms Client Classes - 
 \family typewriter
 CMOOSCommClient
 \family default
@@ -1396,6 +1473,24 @@ reference "sec:Programming-with-MOOS"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection*
+Basic Operations
+\end_layout
+
+\begin_layout Standard
+Again, you might at this point want to jump ahead for some complete example
+ code - if so go to Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Programming-with-MOOS"
+
+\end_inset
+
+.
+ What comes next in this section is a highlevel introduction to some methods
+ which goven key methods and competencies of MOOS
 \end_layout
 
 \begin_layout Subsubsection
@@ -1508,13 +1603,46 @@ name "sub:Grabbing-Mail-with"
 
 \end_layout
 
-\begin_layout Subsubsection
-Configuring Notfications with 
-\family typewriter
-SetOnMailCallBack
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Configuring-Notfications-with"
+\begin_layout Standard
+Use Fetch() to retrieve mail being held by your comms client ready for you
+ to read.
+ Note this does not go and fetch data from the MOOSDB - it simply returns
+ to you what has already been collected but is currerntly being held for
+ you by the worker threads in the client.
+ Typically people use fetch if they want to poll the comms client to see
+ if there is any fresh communications - they might for example out it in
+ a while(1) loop continually looking for mail and processing it if and when
+ it arrives.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+//where M is a std::list<CMOOSMsg> typedefed to be a MOOS_MSGLIST
+\end_layout
+
+\begin_layout Plain Layout
+
+bool Fetch(MOOS_MSGLIST & M);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
 
 \end_inset
 
@@ -1534,6 +1662,39 @@ name "sub:Configuring-Connection-Notificat"
 
 \end_layout
 
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+    void SetOnConnectCallBack(bool (*pfn)(void * pParamCaller),
+\end_layout
+
+\begin_layout Plain Layout
+
+void * pCallerParam);  
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Configuring Mail Delivery with 
 \family typewriter
@@ -1547,11 +1708,47 @@ name "sub:Configuring-Mail-Delivery"
 
 \end_layout
 
-\begin_layout Subsubsection
-Collecting Mail with Fetch
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Collecting-Mail-with"
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+     bool Register(const std::string & sVar,double dfInterval=0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	 bool Register(const std::string & sVarPattern,
+\end_layout
+
+\begin_layout Plain Layout
+
+				   const std::string & sAppPattern,
+\end_layout
+
+\begin_layout Plain Layout
+
+				   double dfInterval); 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
 
 \end_inset
 
@@ -1569,6 +1766,367 @@ name "sub:Starting-communications-with"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+     bool Run(  const std::string & sServer,
+\end_layout
+
+\begin_layout Plain Layout
+
+				int Port,
+\end_layout
+
+\begin_layout Plain Layout
+
+                const std::string & sMyName,
+\end_layout
+
+\begin_layout Plain Layout
+
+                unsigned int nFundamentalFrequency=5); 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Working with Receive Callbacks
+\end_layout
+
+\begin_layout Standard
+Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Grabbing-Mail-with"
+
+\end_inset
+
+ explained the simplest way to read mail - you rely on the comms client
+ to hold a deep and meaningful conversation with the MOOSDB and when you
+ are ready you simply pick up all as yet un processed messages (which we
+ call 
+\begin_inset Quotes eld
+\end_inset
+
+mail
+\begin_inset Quotes erd
+\end_inset
+
+) from with a call to 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family typewriter
+Fetch
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+ From the user's perspective this is a form of polling
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+ even though in V10 behind the scenes the comms client is not polling -it
+ responds to data availability very quickly
+\end_layout
+
+\end_inset
+
+ and we are well served by considering a more responsive paradigm.
+ The next few subsubsections will introduce some of the mecahnisms available
+ to process mail as soon as it comes in with very very low latency.
+\end_layout
+
+\begin_layout Subsubsection
+Configuring Notfications with 
+\family typewriter
+SetOnMailCallBack
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Configuring-Notfications-with-1"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+    void SetOnMailCallBack(bool (*pfn)(void * pParamCaller),
+\end_layout
+
+\begin_layout Plain Layout
+
+		void * pCallerParam); 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Use 
+\family typewriter
+SetOnMailCallBack 
+\family default
+when the simple polling method does not quite fit with your needs and you
+ want really rapid response communications.
+ This function allows you to install a callback which is called as soon
+ as mail arrives.
+ It is important to note that it is called from a thread in the comms client
+ who's raison-d'etre is to manage communications with the DB and not run
+ user code.
+ The expectation is you would call 
+\family typewriter
+Fetch 
+\family default
+from inside this function to actually retrieve the mail.
+ The implication here is that you need to be careful about what you run
+ in the callback - if you do a lot of work it will obviously impact the
+ comms as no new mail will be processed or read from the DB until your work
+ is done.
+ At least if you are using a AsyncCommClient writing to the MOOSDB will
+ not be affected because at least they have seperate threads for reading
+ and writing.
+ There is of course a better way to proceed and that is by using the AddMessageC
+allback API described in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Adding-Message-Handling"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Adding Active Message Queues with 
+\family typewriter
+AddMessageCallback
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Adding-Message-Handling"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is easy to think of situations in which you want some sophistication
+ and flexibiliy in the way you process mail.
+ We've already mentioned in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Configuring-Notfications-with-1"
+
+\end_inset
+
+ that there are risks in processing all mail in a single callback.
+ Imagine you had a need to always process message 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ as quickly as possible but also process message 
+\begin_inset Quotes eld
+\end_inset
+
+Y
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Difficulties arrive if 
+\begin_inset Quotes eld
+\end_inset
+
+Y
+\begin_inset Quotes erd
+\end_inset
+
+ takes a while to process - while thats happening we have no way of getting
+ 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ which is next in the pipeline.
+ A solution to this is provided by the 
+\family typewriter
+AddMessageCallback
+\family default
+ method.
+ This allows you to define a per-message callback and what is more each
+ callback is run fom its own thread.
+ You can also install as many threaded callbacks per message as you wish.
+ For example imagine you were receiving images from a camera published under
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family typewriter
+Image
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ and there are 8 different inage processing tasks you wish to run on those
+ images in which case you would install 8 different callbacks.
+ When you install a callback with AddMessageCallback you get to specifiy
+ a nickname for the callback (which in this instance is synonymous with
+ what we call an ActiveQueue) and a parameter of your choosing which you
+ wish to be handed along with the 
+\family typewriter
+MOOSMsg 
+\family default
+in the callback.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+bool AddMessageCallback(const std::string & sCallbackName,
+\end_layout
+
+\begin_layout Plain Layout
+
+		const std::string & sMsgName,
+\end_layout
+
+\begin_layout Plain Layout
+
+		bool (*pfn)(CMOOSMsg &M, void * pYourParam),
+\end_layout
+
+\begin_layout Plain Layout
+
+		void * pYourParam )
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+The Wildcard Queue
+\end_layout
+
+\begin_layout Standard
+Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Adding-Message-Handling"
+
+\end_inset
+
+ explained in part how to decouple mail processing from comms management
+ by installing an active message queue via 
+\family typewriter
+AddMessageCallback 
+\family default
+but that does result in running a thread for every message for which a callback
+ is added.
+ Although this is a common paradigm with many advantages som users may prefer
+ to have the advantages of decoupling mail processing from mail reception
+ and yet have all messages processed in the same thread.
+ This is what the Wildcard Queue can be used for.
+ Again the user uses 
+\family typewriter
+AddMessageCallback
+\family default
+ but instead ofspecifying a particular message name as the second parameter,
+ they specify 
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This message name is interpreted specially inside the comms code and it
+ means that any message that is not collected by other active queues (instatiate
+d by calls to 
+\family typewriter
+AddMessageCallback
+\family default
+) will be placed on this queue.
+ Note that you can install as many wildcard queues as you like (each with
+ its own distinct nickname) and so you can have each and every message processed
+ by any number of callbacks - its up to you - although most folk will be
+ happy with one new message handling thread.
 \end_layout
 
 \begin_layout Subsection

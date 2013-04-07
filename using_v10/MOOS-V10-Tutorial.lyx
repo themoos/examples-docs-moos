@@ -1503,7 +1503,7 @@ use this method and its overides to send either double, std::string or binary
  The overloaded versions 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1532,7 +1532,7 @@ end{lstlisting}
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1560,7 +1560,7 @@ end{lstlisting}
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1616,7 +1616,7 @@ Use Fetch() to retrieve mail being held by your comms client ready for you
  
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1662,7 +1662,7 @@ name "sub:Configuring-Connection-Notificat"
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout LyX-Code
 \begin_inset ERT
 status open
 
@@ -1708,7 +1708,7 @@ name "sub:Configuring-Mail-Delivery"
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1768,7 +1768,30 @@ name "sub:Starting-communications-with"
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
+Before you can use a comms client to send and receive mail you need to start
+ its threads and this is done with the 
+\family typewriter
+::Run() 
+\family default
+method.
+ You need to tell the client the name or ip address of the machine which
+ is running the 
+\family typewriter
+MOOSDB 
+\family default
+and the port on which it is running (this is often port 9000).
+ You also need to give you client an name - this is the name with which
+ this node will appear in the community so its a good idea to give it something
+ semantically relevent.
+ It also needs to be unique in the community - this is important.
+ The final parameter is only revelant to old re MOOS-V10 clients (ie not
+ MOOS::AsyncCommsClients) and it specifies how many times each second the
+ client will talk to the MOOSDB.
+ 
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1876,7 +1899,7 @@ name "sub:Configuring-Notfications-with-1"
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -2036,7 +2059,7 @@ MOOSMsg
 in the callback.
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset ERT
 status open
 

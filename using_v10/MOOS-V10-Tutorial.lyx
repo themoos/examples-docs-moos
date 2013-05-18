@@ -1709,6 +1709,90 @@ name "sub:Configuring-Mail-Delivery"
 \end_layout
 
 \begin_layout Standard
+The 
+\family typewriter
+Register
+\family default
+ method is used to state what data you want to receive.
+ If you register for 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ and some client posts 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ to the the 
+\family typewriter
+MOOSDB 
+\family default
+then you will receive a 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ in your mail.
+ The 
+\family typewriter
+dfInterval
+\family default
+ parameter allows you to specify how often you wish to be told about changes
+ to the variable in question.
+ For example Register(
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+,2.0) means 
+\begin_inset Quotes eld
+\end_inset
+
+tell me about X but only at a maximum rate of twice a second
+\begin_inset Quotes erd
+\end_inset
+
+ so even if somebody is writing 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ at 500Hz you won;t be flooded by it.
+ The special case of 
+\family typewriter
+dfInterval=0 
+\family default
+means 
+\begin_inset Quotes eld
+\end_inset
+
+tell me about every change
+\begin_inset Quotes erd
+\end_inset
+
+.
+ In other words, if you register for a variable with a zero interval every
+ time any client writes to the DB with that variable you will receive a
+ corresponding message.
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1753,6 +1837,180 @@ end{lstlisting}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Wildcard Subscriptions with 
+\family typewriter
+Register 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Wildcard-Subscriptions-with"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MOOS-V10 offers a great deal of flexibilty in which clients can subscribe
+ for data by allowing so called 
+\begin_inset Quotes eld
+\end_inset
+
+wildcard subscriptions
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This is the second version of the function list above.
+ A client can register its interest in variable whose name and source (the
+ name of the client that send it) matches a simple regex pattern.
+ Only patterns containing * and ? wildcards are supported with their usual
+ meanings i.e.
+ '?' means any single character and '*' means any number of characters.
+ An example will make this whole thing clear and we will be using the 
+\family typewriter
+Register( sVarPattern, sAppPattern,dfInterval) 
+\family default
+interface.
+ Imagine we have a Comm Client object called 
+\family typewriter
+CommsObject -
+\family default
+ here are some ways we could configure some fancy wildcard subsriptions:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}
+\end_layout
+
+\begin_layout Plain Layout
+
+    //register for all variables ending with "image"
+\end_layout
+
+\begin_layout Plain Layout
+
+	//from any process with an name beginning with "camera_"
+\end_layout
+
+\begin_layout Plain Layout
+
+	CommsObject.Register("*image","camera_*", 0.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for every single variable coming from a process
+\end_layout
+
+\begin_layout Plain Layout
+
+	//called "system_control"
+\end_layout
+
+\begin_layout Plain Layout
+
+	CommsObject.Register("*","sytem_control",0.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for any variable beginning with "error_" and 
+\end_layout
+
+\begin_layout Plain Layout
+
+	//produced by a process with a nine letter name beginning
+\end_layout
+
+\begin_layout Plain Layout
+
+	//with "process_0" but please, only tell us at most twice
+\end_layout
+
+\begin_layout Plain Layout
+
+	//a second
+\end_layout
+
+\begin_layout Plain Layout
+
+	CommsObject.Register("error_*","process_0?", 2.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+	return true;
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The logic which supports this new functionality is implemented at the MOOSDB
+ and turns out to be a pretty useful and compact way to define some fine
+ granularity on what data is received.
+ Of course it can also be used to achieve blunderbuss subscriptions by subscribi
+ng to all variables from a given process - 
+\family typewriter
+Register(
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+,ProcessName) 
+\family default
+- or even all variables from all processes - 
+\family typewriter
+Register(
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+)
+\family default
+ the ultimate wildcard.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -2541,179 +2799,6 @@ ampleCMake}]{ examples/CommsExamples/EX40/ex40.cpp}
 
 \end_layout
 
-\begin_layout Subsection
-Wildcard Subscriptions
-\end_layout
-
-\begin_layout Standard
-MOOS-V10 offers a great deal of flexibilty in which clients can subscribe
- for data by allowing so called 
-\begin_inset Quotes eld
-\end_inset
-
-wildcard subscriptions
-\begin_inset Quotes erd
-\end_inset
-
-.
- A client can register its interest in variable whose name and source matches
- a simple regex pattern.
- Only patterns containing * and ? wildcards are supported with their usual
- meanings i.e.
- '?' means any single character and '*' means any number of characters.
- An example will make this whole thing clear and we will be using the 
-\family typewriter
-Register( sVarPattern, sAppPattern,dfInterval) 
-\family default
-interface.
- Imagine we have a Comm Client object called 
-\family typewriter
-CommsObject
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-    //register for all variables ending with "image"
-\end_layout
-
-\begin_layout Plain Layout
-
-	//from any process with an name beginning with "camera_"
-\end_layout
-
-\begin_layout Plain Layout
-
-	CommsObject.Register("*image","camera_*", 0.0);
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	//register for every single variable coming from a process
-\end_layout
-
-\begin_layout Plain Layout
-
-	//called "system_control"
-\end_layout
-
-\begin_layout Plain Layout
-
-	CommsObject.Register("*","sytem_control",0.0);
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	//register for any variable beginning with "error_" and 
-\end_layout
-
-\begin_layout Plain Layout
-
-	//produced by a process with a nine letter name beginning
-\end_layout
-
-\begin_layout Plain Layout
-
-	//with "process_0" but please, only tell us at most twice
-\end_layout
-
-\begin_layout Plain Layout
-
-	//a second
-\end_layout
-
-\begin_layout Plain Layout
-
-	CommsObject.Register("error_*","process_0?", 2.0);
-\end_layout
-
-\begin_layout Plain Layout
-
-	return true;
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Using wildcard registration via the 
-\family typewriter
-Register
-\family default
- method
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The logic which supports this new functionality is implemented at the MOOSDB
- and turns out to be a pretty useful and compact way to define some fine
- granularity on what data is received.
- Of course it can also be used to achieve blunderbuss subscriptions by subscribi
-ng to all variables from a given process - 
-\family typewriter
-Register(
-\begin_inset Quotes eld
-\end_inset
-
-*
-\begin_inset Quotes erd
-\end_inset
-
-,ProcessName) 
-\family default
-- or even all variables from all processes - 
-\family typewriter
-Register(
-\begin_inset Quotes eld
-\end_inset
-
-*
-\begin_inset Quotes erd
-\end_inset
-
-,
-\begin_inset Quotes erd
-\end_inset
-
-*
-\begin_inset Quotes erd
-\end_inset
-
-)
-\family default
- the ultimate wildcard.
- 
-\end_layout
-
 \begin_layout Section
 Writing Applications with CMOOSApp
 \end_layout
@@ -2865,9 +2950,9 @@ Configuring Client Response Times
 
 \begin_layout Standard
 The MOOSDB has some inbuilt security controls that are designed to prevent
- a rogue, ill mannered client to hog resources.
+ a rogue, ill-mannered client to hog resources.
  It seems improper that a random client joining a community can decide to
- send 10 million messages persecond and because of that, reduce the performance
+ send 10 million messages per second and because of that, reduce the performance
  of other clients.
  On the other hand it seems inappropriate to disallow all clients for all
  time very rapid performance simply because of a percieved risk.
@@ -3365,7 +3450,7 @@ ex40
 \begin_inset Text
 
 \begin_layout Plain Layout
-Standalon comms client with per message callbacks
+Standalone comms client with per message callbacks
 \end_layout
 
 \end_inset

@@ -2102,6 +2102,43 @@ end{lstlisting}
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/AsyncCommsThreading.pdf
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The threading model of the AsyncCommClient.
+ Note that send and receive are decoupled and that the receive side supports
+ multiple active queues each of which can invoke a specialised callback.
+ Alternatively you can simply call Fetch() from time to time and get all
+ unread mail.
+ Then again you could install a single mail callback to handle all mail.
+ You have several options.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 The Wildcard Queue
 \end_layout
@@ -2129,7 +2166,7 @@ but that does result in running a thread for every message for which a callback
 \family typewriter
 AddMessageCallback
 \family default
- but instead ofspecifying a particular message name as the second parameter,
+ but instead of specifying a particular message name as the second parameter,
  they specify 
 \begin_inset Quotes eld
 \end_inset
@@ -2140,22 +2177,111 @@ AddMessageCallback
 
 .
  This message name is interpreted specially inside the comms code and it
- means that any message that is not collected by other active queues (instatiate
-d by calls to 
+ means that any message that is not collected by other active queues (instantiat
+ed by calls to 
 \family typewriter
 AddMessageCallback
 \family default
-) will be placed on this queue.
+) will be placed in this queue.
  Note that you can install as many wildcard queues as you like (each with
  its own distinct nickname) and so you can have each and every message processed
  by any number of callbacks - its up to you - although most folk will be
- happy with one new message handling thread.
+ happy with one message handling thread per message type
 \end_layout
 
 \begin_layout Subsection
 Application Writing with 
 \family typewriter
 CMOOSApp
+\end_layout
+
+\begin_layout Standard
+There is one other major class which you really should know about and that
+ is 
+\family typewriter
+CMOOSApp.
+ 
+\family default
+It is a convenience class which makes writing applications very simple.
+ If you use it as a base class then your derived class inherits a processing
+ loop, a CommsClient and mechanisms to read configuration files.
+ All you have to do as a user is overload some key functions.
+ These are
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+Iterate() 
+\family default
+By overriding the 
+\family typewriter
+CMOOSApp::Iterate
+\family default
+ function in a new derived class, the author creates a function from which
+ he or she can orchestrate the work that the application is tasked with
+ doing.
+ As an example, and without prejudice, imagine the new application was designed
+ to control a mobile robot.
+ The iterate function is automatically called by the base class periodically
+ and so it makes sense to execute one cycle of the controller code from
+ this “Iterate ” function.
+ 
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+OnNewMail()
+\family default
+\series medium
+This
+\series default
+ function is called when mail has arrived.
+ The mail arrives in the form of a 
+\family typewriter
+std::list<CMOOSMsg>
+\family default
+ — a list of CMOOSMsg objects.
+ The programmer is free to iterate over this collection examining who sent
+ the data, what it pertains to, how old it is, whether or not it is string,
+ binary or numerical data and to act / process the data accordingly.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+OnConnectToServer() 
+\family default
+is a callback from a thread in the CommsClient object that handles all the
+ IPC communications 3.
+ The callback occurs whenever contact has been made with the MOOSDB server
+ and is a good place in which to make calls to 
+\family typewriter
+Register() 
+\family default
+to subscribe for mail.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+OnStartUp() 
+\family default
+This function is called just before the base class enters into its own “forever-
+loop” calling 
+\family typewriter
+Iterate
+\family default
+ at regular intervals.
+ This is the spot that you would populate with initialisation code, and
+ in particular use the functionality provided by the 
+\family typewriter
+m_MissionReader
+\family default
+ member object to read configuration parameters (including those that modify
+ the default behaviour of the CMOOSApp base class from file.
+ 
 \end_layout
 
 \begin_layout Section
@@ -2344,11 +2470,58 @@ While this is a simple design it is not the best plan - it opens the door
  for doing an unbounded amount of work in the callback which is invoked
  by one of the threads which is used in handling communication with the
  MOOSDB.
- Now V10 DB's can handle this but...
+ Now V10 DB's can handle this but its a better plan to use Active Message
+ Queues as discussed in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Adding-Message-Handling"
+
+\end_inset
+
+.
+ The next section provides an example of how to do that.
 \end_layout
 
 \begin_layout Subsection
 Adding Threaded Message Channels
+\end_layout
+
+\begin_layout Standard
+This example shows you how to add active queues for some messages.
+ Here 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+Y
+\begin_inset Quotes erd
+\end_inset
+
+ will be handled in different callbacks invoked from independent threads.
+ This means you can take as long as you like to handle 
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+ and it won't interfere with the processing of 
+\begin_inset Quotes eld
+\end_inset
+
+Y
+\begin_inset Quotes erd
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -2361,50 +2534,6 @@ status open
 \backslash
 lstinputlisting[caption={Installing a per-message callback}, label={code:CommsEx
 ampleCMake}]{ examples/CommsExamples/EX40/ex40.cpp}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Threading Model
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/AsyncCommsThreading.pdf
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-The threading model of the AsyncCommClient.
- Things to note are...
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
 \end_layout
 
 \end_inset

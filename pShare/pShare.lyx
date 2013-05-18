@@ -2731,7 +2731,7 @@ PSHARE_CMD
 \begin_inset Quotes eld
 \end_inset
 
-cmd = Output = src_name = X?, route = localhost:9021
+cmd = Output , src_name = X?, route = localhost:9021
 \begin_inset Quotes erd
 \end_inset
 
@@ -2742,7 +2742,7 @@ cmd = Output = src_name = X?, route = localhost:9021
 \begin_inset Quotes eld
 \end_inset
 
- cmd = Output = src_name =T, dest_name = TT, route=192.3.4.5:9832
+ cmd = Output , src_name =T, dest_name = TT, route=192.3.4.5:9832
 \begin_inset Quotes erd
 \end_inset
 

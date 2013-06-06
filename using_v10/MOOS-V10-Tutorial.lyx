@@ -2558,6 +2558,110 @@ The Hello World example
 \end_layout
 
 \begin_layout Standard
+In example 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{code:CommsBareBonesPoll}
+\end_layout
+
+\end_inset
+
+ we can see the simplest of examples in using a Comms Client object.
+ In 
+\family typewriter
+main()
+\family default
+we instantiate a comms client and install a single callback - one that will
+ be invoked when a client succesfully connects to a 
+\family typewriter
+MOOSDB.
+ 
+\family default
+Then we start up the client asking it to name itself as 
+\begin_inset Quotes eld
+\end_inset
+
+EX10
+\begin_inset Quotes erd
+\end_inset
+
+ and we tell it the MOOSDB it should connect to is running on localhost
+ (the same machine) and on port 9000.
+ 
+\end_layout
+
+\begin_layout Standard
+What follows is a simple loop which runs once a second (because of the 1000
+ millisecond 
+\family typewriter
+MOOSPause
+\family default
+ ).
+ It posts a message under the name of 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+Greeting
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+ which contains the string 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+Hello
+\begin_inset Quotes erd
+\end_inset
+
+.
+
+\family default
+ Then the loop fetches any and all incoming messages (since the last loop
+ iteration) by calling Fetch.
+ All mesages are now contained in a MOOSMSG_LIST which is simply a typedef
+ for a 
+\family typewriter
+std::list
+\family default
+ of 
+\family typewriter
+std::strings
+\family default
+.
+ We then iterate over each member printing its contents.
+ The only other part t pay attention to is what happens in the 
+\family typewriter
+OnConnect
+\family default
+ callback.
+ Here we told the client (and by implication the DB) that we want to receive
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Greeting
+\begin_inset Quotes erd
+\end_inset
+
+ messages.
+ In this particular case then we are subscribing to a message we are sendind
+ ourselves.
+ This is not exactly common in practice but it makes for a compact first
+ example.
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -2566,8 +2670,8 @@ status open
 
 \backslash
 lstinputlisting[caption={A simple example using MOOSAsyncCommClient and
- polling for mail}, label={code:CommsBareBones} ]{examples/CommsExamples/EX10/ex
-10.cpp}
+ polling for mail}, label={code:CommsBareBonesPoll} ]{examples/CommsExamples/EX1
+0/ex10.cpp}
 \end_layout
 
 \end_inset
@@ -2584,7 +2688,7 @@ Installing a Mail callback
 \end_layout
 
 \begin_layout Standard
-The simplest (in terms of its proximity to the core communication classes)
+Another simple (in terms of its proximity to the core communication classes)
  example of using MOOS-V10 communications is given in Listing 
 \begin_inset ERT
 status open

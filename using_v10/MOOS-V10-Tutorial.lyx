@@ -3362,6 +3362,66 @@ name "sub:Wildcard-Registrations"
 \end_layout
 
 \begin_layout Standard
+A major improvement in MOOSV10 is the abiity to make wildcard registrations.
+ In the next example we instantiate three clients Comms1, Comms2 and Comms3.
+ All three are told to run a default message queue (so any and all mail
+ callbacks are run in a single dedicated thread).
+ However they are each given a different OnConnect callback withi which
+ they make different registrations.
+ 
+\end_layout
+
+\begin_layout Description
+Comms1 registers for any message which comes from a client whose name begins
+ with the letter 
+\begin_inset Quotes eld
+\end_inset
+
+C
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Comms2 registers for any message which begins with the letter 
+\begin_inset Quotes eld
+\end_inset
+
+V
+\begin_inset Quotes erd
+\end_inset
+
+ followed by a single character but only if it comes from a client whose
+ name ends in a 2.
+\end_layout
+
+\begin_layout Description
+Comms3 registers for any message from anyone, what a flibbertigibbet!
+\end_layout
+
+\begin_layout Standard
+Only Comms1 and Comms2 publish data - they each send V1 and V2 the former
+ being binary and the latter a string.
+ So what shoud be printed by the mail callbacks?
+\end_layout
+
+\begin_layout Itemize
+Comms1 should print each V1 and V2 from Comms1 and Comms2
+\end_layout
+
+\begin_layout Itemize
+Comms2 should print one in two V1 and V2 - only if they come from Comms2
+\end_layout
+
+\begin_layout Itemize
+Comms3 should also print all V1 and V2's but it will occasionally also print
+ summaries from the MOOSDB like DB_TIME as it receives everything in the
+ community.
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -3385,6 +3445,7 @@ Writing Applications with CMOOSApp
 \begin_layout Standard
 We can of course achieve the same thing by subclassing CMOOSApp.
  The code listing below shows how.
+ This section is not finished.....maybe broken into a new document...
 \end_layout
 
 \begin_layout Standard

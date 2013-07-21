@@ -5,3 +5,9 @@ EX10  Simplest possible comms client usage with polling
 EX20  Comms client usage with mail callback
 
 EX30  Comms client usage with mail callback and command line support
+
+EX40  Comms client usage  mail callback and custom active queues 
+
+EX50  Comms client usage with custom default mail queues
+
+EX60  Comms client usage with wildcard registrations

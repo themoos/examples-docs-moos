@@ -1196,7 +1196,14 @@ V10_COMPATIBILITY
 
 \end_deeper
 \begin_layout Section
-Basic MOOS Concepts
+Basic MOOS Communications Concepts
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Basic-MOOS-Communications"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2385,6 +2392,13 @@ The threading model of the AsyncCommClient.
  unread mail.
  Then again you could install a single mail callback to handle all mail.
  You have several options.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-threading-model"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2409,7 +2423,7 @@ reference "sub:Adding-Message-Handling"
 
 \end_inset
 
- explained in part how to decouple mail processing from comms management
+ explained, in part, how to decouple mail processing from comms management
  by installing an active message queue via 
 \family typewriter
 AddMessageCallback 
@@ -2451,6 +2465,13 @@ AddMessageCallback
 Application Writing with 
 \family typewriter
 CMOOSApp
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:MOOSApp"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2543,7 +2564,7 @@ m_MissionReader
 \end_layout
 
 \begin_layout Section
-Programming with MOOS Clients
+Programming with MOOS Clients - Examples
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Programming-with-MOOS"
@@ -2553,8 +2574,33 @@ name "sec:Programming-with-MOOS"
 
 \end_layout
 
+\begin_layout Standard
+This section exists to provide full examples of the ideas described in Section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Basic-MOOS-Communications"
+
+\end_inset
+
+.
+ If you are already pretty familiar with MOOS or the kind of programmer
+ who learns by example or by imbibing deeply off full listings this is the
+ place to start.
+\end_layout
+
+\begin_layout Standard
+These examples are intended to be run standalone - so you just start a DB
+ and simply run the example program.
+ This in someways is unusual because more often than not interesting cases
+ will involve two or more clients (for example a producer and a subscriber).
+ Here the examples will be both subscriber and producer - it makes them
+ compact.
+ Just dont let this confuse you.
+\end_layout
+
 \begin_layout Subsection
-The Hello World example
+The Hello World example - polling.
 \end_layout
 
 \begin_layout Standard
@@ -2571,7 +2617,7 @@ ref{code:CommsBareBonesPoll}
 
 \end_inset
 
- we can see the simplest of examples in using a Comms Client object.
+ we can see the simplest of ways to use a CommsClient object.
  In 
 \family typewriter
 main()
@@ -2590,8 +2636,12 @@ EX10
 \begin_inset Quotes erd
 \end_inset
 
- and we tell it the MOOSDB it should connect to is running on localhost
- (the same machine) and on port 9000.
+ and we tell it that the 
+\family typewriter
+MOOSDB
+\family default
+ it should connect to is running on localhost (the same machine) and on
+ port 9000.
  
 \end_layout
 
@@ -2659,6 +2709,9 @@ Greeting
  ourselves.
  This is not exactly common in practice but it makes for a compact first
  example.
+ Note finally that allthough we are polling to pick up the mail, we are
+ not polling to contact the MOOSDB - that is happening behind the scenes
+ on our behalf in a separate mechanism.
 \end_layout
 
 \begin_layout Standard
@@ -2669,9 +2722,9 @@ status open
 
 
 \backslash
-lstinputlisting[caption={A simple example using MOOSAsyncCommClient and
- polling for mail}, label={code:CommsBareBonesPoll} ]{examples/CommsExamples/EX1
-0/ex10.cpp}
+lstinputlisting[caption={Ex10: A simple example using MOOSAsyncCommClient
+ and polling for mail}, label={code:CommsBareBonesPoll} ]{examples/CommsExamples
+/EX10/ex10.cpp}
 \end_layout
 
 \end_inset
@@ -2679,12 +2732,39 @@ lstinputlisting[caption={A simple example using MOOSAsyncCommClient and
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection
+What is bad about this polling design?
+\end_layout
 
+\begin_layout Standard
+This mechanism of having a communications thread (handled by the comms object)
+ interact with the 
+\family typewriter
+MOOSDB
+\family default
+ and to build a list of messages which you as a user is pretty much how
+ MOOS used to work before V10 came along - although the mechanism was oftend
+ wrapped up in a 
+\family typewriter
+MOOSApp
+\family default
+ instance ( Section
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:MOOSApp"
+
+\end_inset
+
+).
+ Its main disadvantage is that you have to actively look to see if mail
+ has arrived.
+ This might be easy to accommodate, it might even be convenient, but sometimes
+ you may want to respond to a message super fast with low latency.
+ V10 can help here.
 \end_layout
 
 \begin_layout Subsection
-Installing a Mail callback
+Installing and Using a Mail callback
 \end_layout
 
 \begin_layout Standard
@@ -2703,14 +2783,33 @@ ref{code:CommsBareBones}
 \end_inset
 
  below.
- Here a MOOS::MOOSAsyncCommClient is instantiated in its rawest form.
- It is configured with a Mail and OnConnect callback and set free with a
- call to Run.
- Note that in the Connect callback it registers for the data that is being
- posted once a second in the main() forever loop.
- Many MOOS users will be used to using CMOOSApp which manages the interaction
- with the Comms Client Objects however it is instructive to look at the
- most fundamental example.
+ Here a 
+\family typewriter
+MOOS::MOOSAsyncCommClient
+\family default
+ is instantiated in its rawest form and one that does not need you to poll
+ to pick up held mail.
+ It is configured with a 
+\shape italic
+Mail
+\shape default
+ and 
+\shape italic
+Connect
+\shape default
+ callback and set free running with a call to 
+\family typewriter
+Run
+\family default
+().
+ Note that once again, in the Connect callback it registers for the data
+ that is being posted once a second in the main() forever loop.
+ Many MOOS users will be used to using 
+\family typewriter
+CMOOSApp
+\family default
+ which manages the interaction with the Comms Client Objects however it
+ is instructive to look at the most fundamental example.
  
 \end_layout
 
@@ -2722,8 +2821,8 @@ status open
 
 
 \backslash
-lstinputlisting[caption={A simple example using MOOSAsyncCommClient}, label={cod
-e:CommsBareBones} ]{examples/CommsExamples/EX20/ex20.cpp}
+lstinputlisting[caption={Ex20: A simple example using MOOSAsyncCommClient},
+ label={code:CommsBareBones} ]{examples/CommsExamples/EX20/ex20.cpp}
 \end_layout
 
 \end_inset
@@ -2731,9 +2830,16 @@ e:CommsBareBones} ]{examples/CommsExamples/EX20/ex20.cpp}
 
 \end_layout
 
+\begin_layout Subsubsection
+An aside - Using a command line parser
+\end_layout
+
 \begin_layout Standard
-This example is certainly raw, it assumes the MOOSDB is on localhost and
- port 9000.
+This example is certainly raw, it assumes the 
+\family typewriter
+MOOSDB
+\family default
+ is on localhost and port 9000.
  We could do a lot better by using the
 \family typewriter
  MOOS::CommandLineParser 
@@ -2763,8 +2869,8 @@ status open
 
 
 \backslash
-lstinputlisting[caption={A fuller example using MOOSAsyncCommClient}, label={cod
-e:CommsExample}]{examples/CommsExamples/EX30/ex30.cpp}
+lstinputlisting[caption={Ex30: A fuller example using MOOSAsyncCommClient},
+ label={code:CommsExample}]{examples/CommsExamples/EX30/ex30.cpp}
 \end_layout
 
 \end_inset
@@ -2824,16 +2930,28 @@ e:CommsExampleCMake}]{ examples/CommsExamples/EX30/CMakeLists.txt }
 \end_layout
 
 \begin_layout Subsubsection
-What is bad about this design?
+What is bad about this responsive design?
 \end_layout
 
 \begin_layout Standard
 While this is a simple design it is not the best plan - it opens the door
  for doing an unbounded amount of work in the callback which is invoked
  by one of the threads which is used in handling communication with the
- MOOSDB.
- Now V10 DB's can handle this but its a better plan to use Active Message
- Queues as discussed in Section 
+ 
+\family typewriter
+MOOSDB
+\family default
+.
+ Now V10 DB's can handle this (each client is serviced by an indepedent
+ thread) but its a better plan to use 
+\begin_inset Quotes eld
+\end_inset
+
+Active Message Queues
+\begin_inset Quotes erd
+\end_inset
+
+ as discussed in Section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Adding-Message-Handling"
@@ -2841,16 +2959,39 @@ reference "sub:Adding-Message-Handling"
 \end_inset
 
 .
- The next section provides an example of how to do that.
+ The Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Adding-Threaded-Message"
+
+\end_inset
+
+ provides an example of how to do that.
 \end_layout
 
 \begin_layout Subsection
-Adding Threaded Message Channels
+Adding Active Message Queues
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Adding-Threaded-Message"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 This example shows you how to add active queues for some messages.
- Here 
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-threading-model"
+
+\end_inset
+
+ gives a pictorial view of how the threads involved in Active Message Queuing
+ interact.
+ The point to note and understand when looking at this example is that 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2894,8 +3035,83 @@ status open
 
 
 \backslash
-lstinputlisting[caption={Installing a per-message callback}, label={code:CommsEx
-ampleCMake}]{ examples/CommsExamples/EX40/ex40.cpp}
+lstinputlisting[caption={Ex40: Installing a per-message callback}, label={code:C
+ommsExampleMessageQueue}]{ examples/CommsExamples/EX40/ex40.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Adding a Default Active Message Queue
+\end_layout
+
+\begin_layout Standard
+We can extend this example by installing a default message queue - this
+ will mean all messages that are not trapped by existing active queues will
+ be thrown onto this default queue and its associated callback function
+ will be invoked for each of these homeless and bereft messages.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={Ex50: Installing a default callback}, label={code:Comms
+ExampleMessageQueueDefault}]{ examples/CommsExamples/EX50/ex50.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note also in this example we are using a 
+\series bold
+wildcard registration
+\series default
+ (we do not specificy the complete message name but simply say we are interested
+ in anything beginning with 
+\begin_inset Quotes eld
+\end_inset
+
+V
+\begin_inset Quotes erd
+\end_inset
+
+ followed by any character.
+ We will look at some more wildcard examples in the next section
+\end_layout
+
+\begin_layout Subsection
+Wildcard Registrations
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Wildcard-Registrations"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={Ex60: Using Wildcard registrations}, label={code:CommsE
+xampleWildcard}]{ examples/CommsExamples/EX60/ex60.cpp}
 \end_layout
 
 \end_inset

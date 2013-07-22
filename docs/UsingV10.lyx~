@@ -1,0 +1,5441 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{verbatim}
+%\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{Bash}
+{language=bash,
+keywordstyle=\color{blue},
+basicstyle=\ttfamily,
+morekeywords={moosuser@machine},
+alsoletter={:~$},
+morekeywords=[2]{moosuser@machine:},
+keywordstyle=[2]{\color{red}},
+literate={\$}{{\textcolor{red}{\$}}}1 
+         {:}{{\textcolor{red}{:}}}1
+         {~}{{\textcolor{red}{\textasciitilde}}}1,
+}
+
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\usepackage{listings}
+
+\lstset{
+tabsize=4,
+language=matlab,
+        basicstyle=\small,
+        %upquote=true,
+        aboveskip={1.5\baselineskip},
+        columns=fixed,
+        showstringspaces=false,
+        extendedchars=true,
+        breaklines=true,
+        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+frame=single,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=false,
+        identifierstyle=\ttfamily,
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.133,0.545,0.133},
+        stringstyle=\color[rgb]{0.627,0.126,0.941},
+language=c++
+}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+A Guide to using MOOS-V10 Communications 
+\end_layout
+
+\begin_layout Author
+Paul Newman, University of Oxford
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/MOOSV-10-256.pdf
+	width 3cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{2cm}
+\end_layout
+
+\end_inset
+
+....ten years on
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Headlines - What's New?
+\end_layout
+
+\begin_layout Standard
+MOOS Version 10 is a major new release of MOOS.
+ It comes just over 10 years after MOOS was first written and it incorporates
+ many changes that improve its performance and answer to requests made by
+ the user community.
+ This document sets out the features, changes and their implications on
+ users of the communications API of MOOS.
+ 
+\end_layout
+
+\begin_layout Subsection*
+Functional Headlines
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Low latency
+\series default
+ Asynchronous communications are now supported via an upgraded 
+\family typewriter
+MOOSDB
+\family default
+ and a new kind of communications client object 
+\family typewriter
+MOOSAsyncCommClient.
+
+\family default
+ This allows data to be pushed to clients by the 
+\family typewriter
+MOOSDB
+\family default
+ rather than clients having to fetch messages which match their subscriptions
+ when the call into the 
+\family typewriter
+MOOSDB.
+ 
+\family default
+This affords a drastically decreased latency between data being published
+ and clients receiving it.
+ Latencies are routinely sub-millisecond now.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Multithreaded design
+\series default
+ The 
+\family typewriter
+MOOSDB
+\family default
+ now offers improved resilience when working with clients which reside at
+ the end of a high latency or low bandwidth link.
+ Each client is now furnished with its own thread within the DB which allows
+ each client to take as long as it needs to complete and 
+\family typewriter
+read
+\family default
+ or 
+\family typewriter
+write 
+\family default
+without holding up the interactions of other clients.
+ This behaviour can be disabled from the command line in which case the
+ behaviour of the DB reverts to pre V10 behaviour.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Wildcard subscriptions
+\series default
+ The 
+\family typewriter
+MOOS 
+\family default
+communications API now supports wildcard subscriptions whereby clients can
+ subscribe to variable which match variable name patterns and also source
+ name patterns.
+ For example a client could register for 
+\begin_inset Quotes eld
+\end_inset
+
+*:*
+\begin_inset Quotes erd
+\end_inset
+
+ meaning all variables from all sources or 
+\begin_inset Quotes eld
+\end_inset
+
+J*:*K
+\begin_inset Quotes erd
+\end_inset
+
+ meaning any variable beginning with 
+\begin_inset Quotes eld
+\end_inset
+
+J
+\begin_inset Quotes erd
+\end_inset
+
+ from a process ending in 
+\begin_inset Quotes eld
+\end_inset
+
+K
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Configurable behaviour
+\series default
+ in the way CMOOSApp handles mail.
+ You can have mail handled pretty much as soon as it comes in.
+ If you are using the low level comms object 
+\family typewriter
+MOOSAsyncCommClient
+\family default
+ you can have a call back handled the instant mail arrives.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Standard Command Line Switches
+\series default
+ All MOOS applications can with a trivial code change be configured to handle
+ and interpret standard command line parameters.
+ Additionally, a tool is provided to ease parsing command line options.
+ CMOOSApp has new hooks to support and encourage the writing of user help
+ and example configurations which can be printed to stdio.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+A new build system 
+\series default
+is provided which via CMake make linking against MOOS (and the right version)
+ easy.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+New testing
+\series default
+ command line programs which can easily be used to test MOOS communications
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Live diagnostics
+\series default
+ from the MOOSDB are avaiable over udp
+\end_layout
+
+\begin_layout Subsection*
+Structural Headlines
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Fission into smaller, neater delineated code trees:
+\series default
+ The communication layer, utility applications (like 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{pLogger}
+\end_layout
+
+\end_inset
+
+), and graphical tools all now live in 
+\lang british
+separate
+\lang english
+ projects.
+ For example, it is now possible to download only the communications layer
+ and work just with that.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+A single core library:
+\series default
+ There is now just one core library 
+\family typewriter
+libMOOS
+\family default
+ which is an amalgamation of what was previously 
+\family typewriter
+MOOSGenLib
+\family default
+ and 
+\family typewriter
+MOOSLib
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+A 
+\lang british
+rationalised
+\lang english
+ header file structure:
+\series default
+ The header structure for commonly used files has changed to reflect this
+ (but a backwards compatibility mode is provided so users can in the first
+ instance carry on as if this is not the case)
+\end_layout
+
+\begin_layout Section
+Structural Changes
+\end_layout
+
+\begin_layout Subsection
+Separate Projects
+\end_layout
+
+\begin_layout Standard
+Pre version 10, the MOOS project was an ugly mash-up of source code which
+ covered a strange span of functionality.
+ This belied its Maritime roots- it included things like 
+\family typewriter
+iINS 
+\family default
+and pNav
+\family typewriter
+ 
+\family default
+-appications which had clear heritage in marine autonomy and also the domain
+ independent communications tools.
+ In V10 these have been teased apart.
+ There is now a standalone 
+\family typewriter
+core-moos
+\family default
+ library which only contains communication and domain neutral basic utilities.
+ This project is the sole focus of this document.
+\end_layout
+
+\begin_layout Subsection
+Library Structure and Header Files
+\end_layout
+
+\begin_layout Standard
+The classes that implement the communications and application management
+ (for example 
+\family typewriter
+CMOOSApp) 
+\family default
+now reside in a single library called 
+\family typewriter
+libMOOS.
+ 
+\family default
+There is no 
+\family typewriter
+MOOSGenLib
+\family default
+ anymore - the classes and function that lived in that lump of code now
+ reside in 
+\family typewriter
+libMOOS
+\family default
+ and the headers can be found in a subdirectory called 
+\family typewriter
+Utils 
+\family default
+within
+\family typewriter
+ core-moos.
+ 
+\family default
+There are in fact four key subdirectories in 
+\family typewriter
+libMOOS
+\family default
+.
+ In figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Top-level-directory-structure"
+
+\end_inset
+
+you can see the basic structure of the V10 code base.
+ 
+\end_layout
+
+\begin_layout Description
+App contains the classes like CMOOSApp and CMOOSInstrument
+\end_layout
+
+\begin_layout Description
+Comms contains everything to do with IPC communications
+\end_layout
+
+\begin_layout Description
+Utils contains everything that used to be in MOOSGenLib (with some nice
+ additions)
+\end_layout
+
+\begin_layout Description
+Thirdparty contains small pots of thirdparty code which is being leveraged
+ in V10 (all licenses included)
+\end_layout
+
+\begin_layout Description
+include contains some high level include directories that make using libMOOS
+ easy (and backwards compatible)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/structure.pdf
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Top-le
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Top-level-directory-structure"
+
+\end_inset
+
+vel directory structure for MOOS V10
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You might be wondering where all the header files that used to be in 
+\family typewriter
+MOOSGenLib
+\family default
+ have gone.
+ They are now in 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/Utils/*.h
+\begin_inset Quotes erd
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip:
+\series default
+ If you were previously including 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+MOOSGenLibGlobalHelper.h
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+ then you now need to include 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family typewriter
+MOOS/libMOOS/Utils/
+\family default
+MOOSUtilityFunctions
+\family typewriter
+.h
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ instead (or use the compatibility mode described in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Building-V10"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Developing with V10
+\end_layout
+
+\begin_layout Subsection
+Ethos
+\end_layout
+
+\begin_layout Subsubsection
+No code change required
+\end_layout
+
+\begin_layout Standard
+A lot of effort has been taken to make the users transition to MOOS V10
+ painless.
+ Indeed the goal was to make it possible to upgrade to V10 without having
+ to change any source code.
+ The only thing a user does need to do is link against the new library and
+ this is made easy with the revamped 
+\family typewriter
+CMake
+\family default
+ build system.
+ Of course good citizens would probably be uncomfortable with living a legacy
+ interface and in time will want to upgrade.
+ However the point is you can get started with MOOS-V10 for zero overhead.
+\end_layout
+
+\begin_layout Subsubsection
+Backward Compatibility (Mixed Systems)
+\end_layout
+
+\begin_layout Standard
+No assumption is made the all components of a MOOS system will be upgraded.
+ It is entirely possible to use a holy relic pre-V10 clients or and old
+ trusted MOOSDB with new or rebuilt software which has linked against V10.
+ The motivation here is to start using V10 you don't need to rebuild everything.
+ You could for example simply run the new MOOSDB and you will still get
+ improved performance.
+ If you circumstances dictate, you can even run the new 
+\family typewriter
+MOOSDB 
+\family default
+in safe mode in which it reverts to running the pre-V10 source code.
+\end_layout
+
+\begin_layout Subsection
+Building V10 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Building-V10"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+The quickest way
+\end_layout
+
+\begin_layout Standard
+We shall begin where we should and check out a version of MOOS-V10 from
+ a git repos.
+ We will follow good practice and do an out of place build - the source
+ code will go in 
+\begin_inset Quotes eld
+\end_inset
+
+src
+\begin_inset Quotes erd
+\end_inset
+
+ and we will build in 
+\begin_inset Quotes eld
+\end_inset
+
+build
+\begin_inset Quotes erd
+\end_inset
+
+.
+ We will also, after fetching the source switch to the 
+\begin_inset Quotes eld
+\end_inset
+
+devel
+\begin_inset Quotes erd
+\end_inset
+
+ branch because here we are living on the edge 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if you want to know what branches are available type 
+\family typewriter
+git branch
+\end_layout
+
+\end_inset
+
+
+\family typewriter
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ mkdir core-moos-v10 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd core-moos-v10
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ git clone git@github.com:themoos/core-moos.git src
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd src
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ git checkout devel 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ cd ..
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ mkdir build
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ccmake ../src
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this point you should, after hitting 'c' a couple of times be presented
+ with a CMake screen that looks like that shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-default-build"
+
+\end_inset
+
+ (note some of the entries are platform dependent so don't worry if what
+ you see is not identical to this).
+ If you simply want to link your existing code against MOOS V10 without
+ needing to worry about the new header file structure then you will need
+ to turn on 
+\family typewriter
+ENABLE_V10_COMPATIBILITY.
+ 
+\family default
+This switch adds an additional set of include path to those exported by
+ the project, which have the same structure as those present in previous
+ (now legacy) versions of MOOS.
+ If you 
+\begin_inset Quotes eld
+\end_inset
+
+include
+\begin_inset Quotes erd
+\end_inset
+
+ one of these files they actually simply redirect to include header files
+ residing in the new structure.
+ This is not a happy long term policy - you should think if possible about
+ updating your code - but there is much to be said for not 
+\emph on
+having 
+\emph default
+to change your code simply to use V10.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+ Turn on 
+\family typewriter
+ENABLE_V10_COMPATIBILITY 
+\family default
+to make V10 appear to have the header structure of earlier versions.
+ This allows you to use V10 without needing to change any of your source
+ code
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/v10-simple-build.pdf
+	width 90col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-default-build"
+
+\end_inset
+
+The default build screen for MOOS V10.
+ Note that by default USE_ASYNC_COMMS is off.
+ If you want really fast communications you should enable this.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You are are now in a position to build the MOOS.
+ So press 'c' until 'g' appears, then press 'g' and you are good to go.
+ Then at the terminal prompt type 'make' to build the project.
+ Two directories should have been created 
+\series bold
+bin
+\series default
+ and 
+\series bold
+lib.
+ 
+\series default
+In lib you will see 
+\family typewriter
+libMOOS.a
+\family default
+ and in 
+\family typewriter
+bin
+\family default
+ you will find the newly created 
+\family typewriter
+MOOSDB.
+
+\family default
+ If you run up the MOOSDB (by typing ./MOOSDB you should see output similar
+ to that in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:running-the-new-db"
+
+\end_inset
+
+.
+ You should be able to use this 
+\family typewriter
+MOOSDB
+\family default
+ to manage all communications with any existing MOOS applications you have
+ lying around - you should not have to upgrade them.
+ Again, at the risk of labouring a point, MOOS-V10 is backwardly compatible
+ in many senses.
+ You are probably wondering if just running this new DB by itself buys you
+ anything.
+ The answer is yes, it does.
+ Each client now has its own thread so if you have dodgey comms between
+ one client and the 
+\family typewriter
+MOOSDB 
+\family default
+this
+\family typewriter
+ 
+\family default
+ne'er-do-well client will not interfere with other client DB interactions
+ - it won't be able to hold them up
+\backslash
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+this was a big annoyance in earlier versions.
+ There were occasions in which a dodgey wireless connection between a client
+ and a DB causes all other clients connections to suffer.
+ Misery
+\end_layout
+
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+you can use the V10 
+\family typewriter
+MOOSDB
+\family default
+ with old MOOS applications - you don't 
+\shape italic
+have
+\shape default
+ to recompile them.
+ V10 is backwards compatible.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/MOOSDBRunning.pdf
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:running-the-new-db"
+
+\end_inset
+
+running the new MOOSDB
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Changing 
+\family typewriter
+#include
+\family default
+ directives:
+\end_layout
+
+\begin_layout Standard
+If you are prepared to invest 30 minutes in committing to the new MOOS V10
+ project structure then this section tells you what to do.
+ If you are as yet unsure if you want to upgrade, then don't bother simply
+ use the 
+\family typewriter
+ENABLE_V10_COMPATIBILITY 
+\family default
+option in CMake - this allows you to simply revert to old versions of MOOS
+ without lifting a finger.
+\end_layout
+
+\begin_layout Standard
+The actions needed to upgrade are pretty simple.
+ Where previously you had something like 
+\family typewriter
+#include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOSLIB/MOOSCommClient.h
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+ you now use 
+\family typewriter
+#include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/Comms/MOOSCommClient.h
+\begin_inset Quotes erd
+\end_inset
+
+.
+ 
+\family default
+The following table will help you figure out how to include an particular
+ header.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="50col%">
+<column alignment="left" valignment="top" width="50col%">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Header
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+include prefix
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+\size footnotesize
+MOOSAsyncCommClient.h MOOSMsg.h XPCEndian.h XPCTcpSocket.h MOOSCommClient.h MOOSSkewF
+ilter.h XPCException.h XPCUdpSocket.h MOOSCommObject.h MOOSVariable.h XPCGetHostInfo.h
+ MOOSCommPkt.h ServerAudit.h XPCGetProtocol.h MOOSCommServer.h ThreadedCommServer.h
+ XPCSocket.h
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+#include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/Comms/---.h
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+\size footnotesize
+ConsoleColours.h MOOSMemoryMapped.h MOOSTimeJournal.h IPV4Address.h MOOSNTSerialPort.
+h MOOSUtilityFunctions.h InterpBuffer.h MOOSPlaybackStatus.h MOOSUtils.h KeyboardCap
+ture.h MOOSSafeList.h NTSerial.h MOOSAssert.h MOOSSafeList.h~ ProcessConfigReader.h
+ MOOSException.h MOOSScopedLock.h SafeList.h MOOSFileReader.h MOOSSerialPort.h
+ TMaxPair.h MOOSLinuxSerialPort.h MOOSThread.h TMinPair.h MOOSLock.h MOOSThreadedTime
+Journal.h ThreadPrint.h
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+#include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/Utils/---.h
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+\size footnotesize
+MOOSApp.h MOOSInstrument.h
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+#include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/App/---.h
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+\size footnotesize
+MOOSLib.h
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+#include 
+\begin_inset Quotes eld
+\end_inset
+
+MOOS/libMOOS/MOOSLib.h
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Importing and Building Against MOOS-V10
+\end_layout
+
+\begin_layout Standard
+So now you have built the new MOOS.
+ Next questions is 
+\begin_inset Quotes eld
+\end_inset
+
+how do you link against it
+\begin_inset Quotes erd
+\end_inset
+
+.
+ If you use 
+\family typewriter
+CMake
+\family default
+ then this is trivial you just need to insert the line 
+\family typewriter
+find_package(MOOS 10)
+\family default
+ in your 
+\family typewriter
+CMakeList.txt
+\family default
+ script.
+ This goes and finds the latest build you made of MOOS V10 (and only V10)
+ and collects the correct include paths, library names and library paths
+ and puts them in the following 
+\family typewriter
+CMake
+\family default
+ variables:
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_INCLUDE_DIRS
+\family default
+\series bold
+ 
+\series default
+This contains the list of include directories you need to include to find
+ 
+\family typewriter
+MOOS V10
+\family default
+ header files.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_DEPEND_INCLUDE_DIRS 
+\family default
+This contains the list of include directories which MOOS needs to find teh
+ headers it depends on (should be empty)
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_LIBRARIES 
+\family default
+This contains the precise library name ( absolute path) for 
+\family typewriter
+libMOOS 
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+MOOS_DEPEND_LIBRARIES 
+\family default
+This contains the absolute paths for the libraries MOOS depends on (should
+ be empty)
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+These variables can be used to import all you need to know about MOOS into
+ an external project.
+ You can see how to do this in some the example 
+\family typewriter
+\series default
+CMakeLists.txt
+\family default
+\series medium
+ file given below.
+ Here we make an executable called 
+\family typewriter
+\series default
+example_moos 
+\family default
+, explicitly search for MOOS-V10, set up include paths, set up an executable
+ and finally indicate how to link.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small},language=bash"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#this builds some code using MOOS
+\end_layout
+
+\begin_layout Plain Layout
+
+set(EXECNAME example_moos)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#find MOOS version 10 be explicit about version 10 so we don't
+\end_layout
+
+\begin_layout Plain Layout
+
+#find another old version
+\end_layout
+
+\begin_layout Plain Layout
+
+find_package(MOOS 10)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#what source files are needed to make this exectutable? 
+\end_layout
+
+\begin_layout Plain Layout
+
+set(SRCS  example_moos.cpp)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#where should one look to find headers?
+\end_layout
+
+\begin_layout Plain Layout
+
+include_directories( ${MOOS_INCLUDE_DIRS} ${MOOS_DEPEND_INCLUDE_DIRS})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#state we wish to make a computer program
+\end_layout
+
+\begin_layout Plain Layout
+
+add_executable(${EXECNAME} ${SRCS} )
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#and state what libraries said program needs to link against
+\end_layout
+
+\begin_layout Plain Layout
+
+target_link_libraries(${EXECNAME} ${MOOS_LIBRARIES} ${MOOS_DEPEND_LIBRARIES})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+How is MOOS found?
+\end_layout
+
+\begin_layout Standard
+You have probably noticed that you do not need to install MOOS V10 for 
+\family typewriter
+find_package(MOOS V10)
+\family default
+ to work.
+ CMake simply appears to automagically find the latest build directory.
+ It is worth understanding how this is done.
+ CMake provides support for 
+\family typewriter
+find_package 
+\family default
+by writing at build time to a file in ~/.cmake/modules.
+ In this case because we are talking about 
+\family typewriter
+MOOS
+\family default
+ there is a file in ~/.cmake/modules/MOOS (who's name is a whole load of
+ crazy letters) inside of which is the location to a file called 
+\family typewriter
+MOOSConfig.cmake.
+ 
+\family default
+This file  is created in the build directory when MOOS is configured.
+ The find_package directive imports 
+\family typewriter
+MOOSConfig.cmake
+\family default
+ (and from there 
+\family typewriter
+UseMOOS.cmake
+\family default
+) and this tells the importing CMake instance how to use MOOS.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Trouble Shooting
+\end_layout
+
+\begin_layout Standard
+All the above should go smoothly but there have been instances reported
+ in which things go wrong - this is always due to previous installations
+ of MOOS and old configuration files hanging around.
+ Executing the following steps should help if you get into trouble
+\end_layout
+
+\begin_layout Itemize
+clean down the 
+\family typewriter
+MOOS-V10
+\family default
+ project (why not remove the whole build directory?)
+\end_layout
+
+\begin_layout Itemize
+remove all contents of 
+\family typewriter
+~/.cmake/modules/MOOS
+\end_layout
+
+\begin_layout Itemize
+remove any old copies of MOOSConfig.cmake you may have hanging around in
+ you build tree.
+ Note that once upon a time, long ago there was a 
+\family typewriter
+MOOSConfig.cmake
+\family default
+ file checked into the source tree of MOOS-IvP.
+ This can cause all kinds of trouble......
+\end_layout
+
+\begin_layout Itemize
+If header files are not being found by you project:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+if your code previously worked with older versions of MOOS did you change
+ your source code to reflect the new locations of headers? Or, if you really
+ don't want to change you code, did you enable 
+\family typewriter
+V10_COMPATIBILITY
+\family default
+ when you built MOOS-V10?
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Leveraging V10
+\end_layout
+
+\begin_layout Standard
+This section will explain how programmers and users of MOOS can leverage
+ some of the important and hopefully helpful new functionality in MOOS V10.
+\end_layout
+
+\begin_layout Subsection
+Asynchronous Comms
+\end_layout
+
+\begin_layout Standard
+This section explains new functionality offered in the V10 communications
+ classes which allow for very low latency communications between components.
+ This new facility allows one clients write of data to instigate a read
+ on all other clients who have previously expressed interest in that data.
+ This then is a departure from the model of a client having to call in to
+ the DB, deliver its post and while 
+\begin_inset Quotes eld
+\end_inset
+
+on the line
+\begin_inset Quotes erd
+\end_inset
+
+, pick up and mail the DB has waiting for it.
+ Of course we must stress that the user has to opt in for this new functionality
+ - there is no imperative to run new code.
+ To enable Asynchronous Comms in clients derived from 
+\family typewriter
+CMOOSApp
+\family default
+ you need to enable 
+\family typewriter
+USE_ASYNC_COMMS
+\family default
+ in a configure time in CMake.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+.
+ This flag makes the m_
+\family typewriter
+Comms
+\family default
+ member of 
+\family typewriter
+CMOOSApp
+\family default
+ an 
+\family typewriter
+MOOS::MOOSAsyncCommsClient
+\family default
+ rather than a 
+\family typewriter
+CMOOSCommClient.
+ 
+\family default
+Note that you can have this flag turned off and still use a
+\family typewriter
+ MOOS::MOOSAsyncCommsClient
+\family default
+ object and the 
+\family typewriter
+MOOSDB
+\family default
+ will service that object's interactions appropriately.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+To enable fast asynchronous comms in MOOSApps you have to turn 
+\family typewriter
+USE_ASYNC_COMMS
+\family default
+ to 
+\family typewriter
+ON 
+\family default
+when configuring MOOS using CMake.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Low Latency Communications via 
+\family typewriter
+MOOSAsyncCommClient
+\end_layout
+
+\begin_layout Standard
+The key class is 
+\family typewriter
+MOOS::MOOSAsyncCommClient 
+\family default
+which is a derivate of the tried and test 
+\family typewriter
+CMOOSCommClient.
+ 
+\family default
+Its interface is identical
+\family typewriter
+ 
+\family default
+to
+\family typewriter
+ CMOOSCommClient 
+\family default
+and so the user should notice no progammatical difference in using this
+ client.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Indeed many users have little direct interaction with the communications
+ object preferring instead to operate withing the comfort of classes derived
+ from CMOOSApp which wraps the low level communications API.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When a 
+\family typewriter
+MOOS::MOOSAsyncCommClient
+\family default
+ connects to a V10 
+\family typewriter
+MOOSDB
+\family default
+ it instigates some quite different behaviour.
+ Firstly the DB spawns two additional threads -one to handle reading from
+ the client and one to handle writing to the client.
+ These threads are not 
+\lang british
+synchronised
+\lang english
+ - they operate independently pulling and pushing data from work queues
+ from within the DB itself.
+ The client itself also has distinct read and write threads - when a user
+ posts some data it is added to a work queue on which the read thread is
+ waiting.
+ The read thread pushes this data to the DB and simply waits for another
+ chunk of work to appear on the queue.
+ Similarly the clients read thread sits in a blocking read on the socket
+ linking it to the DB.
+ When data arrives it is placed into the clients 
+\begin_inset Quotes eld
+\end_inset
+
+mailbox
+\begin_inset Quotes erd
+\end_inset
+
+ and optionally a user callback is invoked.
+ Importantly, this architecture of each client having a read and write thread
+ at the client and 
+\family typewriter
+MOOSDB
+\family default
+ ends, allows for data to be pushed to clients at any time.
+ Take for example the case of 50 clients all having subscribed for variable
+ 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+X
+\begin_inset Quotes erd
+\end_inset
+
+.
+
+\family default
+ When the 51st client publishes 
+\begin_inset Quotes eld
+\end_inset
+
+
+\series bold
+X
+\series default
+
+\begin_inset Quotes erd
+\end_inset
+
+ this data can be instantly placed on the outgoing queue of all 50 interested
+ clients within th3 
+\family typewriter
+MOOSDB
+\family default
+.
+ Because the read threads on the clients are in a blocking read they two
+ an respond immediately leading to some very responsive behaviour.
+ Note also that if one of those clients has a dodgey communications link
+ to the DB this has not effect on the other 49 clients.
+ This then is in stark contrast to the pre V10 releases of MOOS.
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Bench-Marks"
+
+\end_inset
+
+some performance metrics are given which highlight the difference in behaviour
+ between V10 and previous incantations of the MOOS communications API.
+\end_layout
+
+\begin_layout Subsubsection
+Supporting Iterate Modes in 
+\family typewriter
+MOOSApp
+\end_layout
+
+\begin_layout Standard
+If MOOS is compiled with 
+\family typewriter
+USE_ASYNC_COMMS 
+\family default
+then the 
+\family typewriter
+m_Comms
+\family default
+ member of 
+\family typewriter
+CMOOSApp
+\family default
+ becomes a MOOSAsyncCommClient and so all communications will be using this
+ new faster functionality.
+ CMOOSApp is designed to provide an easy to use framework in which to write
+ applications which leverage the MOOS communications API.
+ The ability for MOOSAsyncCommClients to have data pushed to them and invoke
+ an asynchronous callback affords the opportunity to augment the behaviour
+ of CMOOSApp to provide application developed with greater flexibility and
+ develop apps which respond quickly to communication events.
+\end_layout
+
+\begin_layout Standard
+MOOS V10 offers three new configuration modes which are described in the
+ table below.
+ The mode in which the application operates can be set either in the application
+s configuration block (e.g by having a line like 
+\family typewriter
+IterateMode = 2
+\family default
+ or programmatically by calling 
+\family typewriter
+SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL)
+\family default
+ ).
+ These modes are supported by an additional configuration parameter called
+ MaxAppTick who's function is described in the table.
+ This new parameter can be set in the configuration file 
+\family typewriter
+MaxAppTick=100
+\family default
+ or passed as second parameter in 
+\family typewriter
+CMOOSApp::SetAppFreq(AppTick,MaxAppTick).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0pt">
+<column alignment="left" valignment="top" width="70col%">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+REGULAR_ITERATE_AND_MAIL
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Summary
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+This mode is the default just as in pre-V10 releases Iterate() and OnNewMail()
+ are called regularly and if mail is available, in lock step.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Configuration Block 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+IterateMode=0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+OnNewMail
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+called at most every 
+\family typewriter
+1/AppTick
+\family default
+ seconds.
+ If mail has arrived 
+\family typewriter
+OnNewMail
+\family default
+() will be called just before 
+\family typewriter
+Iterate
+\family default
+()
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Iterate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+called every 
+\family typewriter
+1/AppTick
+\family default
+ seconds.
+ So if AppTick=10 
+\family typewriter
+Iterate
+\family default
+() will be called at 10Hz.
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of AppTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+sets the speed of 
+\family typewriter
+Iterate()
+\family default
+ in calls per second
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of MaxAppTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not used
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of CommsTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not used as communications are asynchronous
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="70col%">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+COMMS_DRIVEN_ITERATE_AND_MAIL
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Summary
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The rate at which 
+\family typewriter
+Iterate
+\family default
+ is called is coupled to the reception of mail.
+ As soon as mail becomes available 
+\family typewriter
+OnNewMail
+\family default
+ is called and is then followed by 
+\family typewriter
+Iterate
+\family default
+().
+ If no mail arrives for 
+\family typewriter
+1/AppTick
+\family default
+ seconds then iterate is called by itself.
+ When mail is arriving 
+\family typewriter
+Iterate()
+\family default
+ and 
+\family typewriter
+OnNewMail()
+\family default
+ are synchronous - if 
+\family typewriter
+OnNewMail()
+\family default
+ is called it will always be followed by a called to 
+\family typewriter
+Iterate
+\family default
+()
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Configuration Block 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+IterateMode=1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+OnNewMail
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Called at up to 
+\family typewriter
+MaxAppTick
+\family default
+ times per second.
+ So if 
+\family typewriter
+MaxAppTick=100
+\family default
+ 
+\family typewriter
+OnNewMail()
+\family default
+ will be called in response to the reception of new mail at up to 100Hz.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Iterate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+called at least 
+\family typewriter
+AppTick
+\family default
+ times per second (if no mail) and up to 
+\family typewriter
+MaxAppTick 
+\family default
+times per second
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of AppTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+sets a lower bound on the frequency at which 
+\family typewriter
+Iterate
+\family default
+() is called.
+ So if AppTick = 10 then 
+\family typewriter
+Iterate
+\family default
+ will be called at at least 10Hz
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of MaxAppTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+sets an upper limit on the rate at which Iterate (and OnNewMail) can me
+ called.
+ If 
+\family typewriter
+MaxAppTick
+\family default
+=0 both the speed is unlimited.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of CommsTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not used as communications are asynchronous
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="70col%">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Summary
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Iterate is called regularly and 
+\family typewriter
+OnNewMail
+\family default
+ is called when new mail arrives.
+ Iterate will not always be called after 
+\family typewriter
+OnNewMail
+\family default
+ unless it is scheduled to do so.
+ In this way 
+\family typewriter
+OnNewMail
+\family default
+ and 
+\family typewriter
+Iterate
+\family default
+ are decoupled.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Configuration Block 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+IterateMode=2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+OnNewMail
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Called as soon as mail is delivered at up to 
+\family typewriter
+MaxAppTick 
+\family default
+times per second.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Iterate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+called every AppTick times per second
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of AppTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+sets the speed of 
+\family typewriter
+Iterate()
+\family default
+ in calls per second as in REGULAR_ITERATE_AND_MAIL
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of MaxAppTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+limits the rate at which OnNewMail is called.
+ If 
+\family typewriter
+MaxAppTick
+\family default
+=0 both the speed is unlimited.
+ With a slight abuse of notation in this mode 
+\family typewriter
+MaxAppTick 
+\family default
+does not control 
+\family typewriter
+Iterate()
+\family default
+ speed at all - it simply limits the rate at which new mail can be responded
+ to
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Role of CommsTick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not used as communications are asynchronous
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Wildcard Subscriptions
+\end_layout
+
+\begin_layout Standard
+MOOS-V10 extends the way in which clients can subscribe for data by allowing
+ 
+\begin_inset Quotes eld
+\end_inset
+
+wildcard subscriptions
+\begin_inset Quotes erd
+\end_inset
+
+.
+ A client can register its interest in variable whose name and source matches
+ a simple regex pattern.
+ Currently only patterns containing * and ? wildcards are supported with
+ their usual meanings so ? means any single character and * means any number
+ of characters.
+ An example will make this whole thing clear and we will be using the new
+ 
+\family typewriter
+CMOOSApp::Register( sVarPattern, sAppPattern,dfInterval) 
+\family default
+interface.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "language={C++},showstringspaces=false"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+bool MyApp::OnConnectToServer()
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for all variables ending with "image"
+\end_layout
+
+\begin_layout Plain Layout
+
+	//from any process with an name beginning with "camera_"
+\end_layout
+
+\begin_layout Plain Layout
+
+	Register("*image","camera_*, 0.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for every single variable coming from a process
+\end_layout
+
+\begin_layout Plain Layout
+
+	//called "system_control"
+\end_layout
+
+\begin_layout Plain Layout
+
+	Register("*","sytem_control",0.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	//register for any variable beginning with "error_" and 
+\end_layout
+
+\begin_layout Plain Layout
+
+	//produced by a process with a nine letter name beginning
+\end_layout
+
+\begin_layout Plain Layout
+
+	//with "process_0" but please, only tell us at most twice
+\end_layout
+
+\begin_layout Plain Layout
+
+	//a second
+\end_layout
+
+\begin_layout Plain Layout
+
+	Register("error_*","process_0?", 2.0);
+\end_layout
+
+\begin_layout Plain Layout
+
+	return true;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The logic which supports this new functionality is implemented at the MOOSB
+ and turns our to be a pretty useful and compact way to define some fine
+ granularity on what MOOSApp (or indeed CommsClient because that is the
+ fundamental communications object) receives.
+ Of course it can also be used to achieve blunderbuss subscriptions by subscribi
+ng to all variables from a given process - 
+\family typewriter
+Register(
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+,ProcessName) 
+\family default
+- or even all variables from all processes - 
+\family typewriter
+Register(
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+)
+\family default
+ the ultimate wildcard.
+ 
+\end_layout
+
+\begin_layout Subsection
+Common Command Line Interface
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Common-Command-Line"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+MOOSApp 
+\family default
+now supports a whole set of command line options which, by making a very
+ small change to your code will make all your programs which use MOOSApp
+ respond in the same way 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+sadly this does require a code change as there is no other way to get command
+ line parameters in 
+\family typewriter
+CMOOSApp..
+\end_layout
+
+\end_inset
+
+.
+ The upgrade is effected by invoking a new version of 
+\family typewriter
+CMOOSApp::Run
+\family default
+ which takes argc and argv as parameters:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small},language={C++}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+bool Run(const std::string &  sName,const std::string & sMissionFile, int
+ argc, char * argv[]);
+\end_layout
+
+\begin_layout Plain Layout
+
+bool Run( const std::string &,int argc, char * argv[]); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This in turn populates a member variable within 
+\family typewriter
+CMOOSApp
+\family default
+ called 
+\family typewriter
+m_CommandLineParser 
+\family default
+which is used internally to parse the following command line variables and
+ flags.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+variables:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_app_name=<string>    : name of application
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_name=<string>        : name with which to register with MOOSDB  
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_file=<string>        : name of configuration file   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_host=<string>        : address of machine hosting MOOSDB   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_port=<number>        : port on which DB is listening    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_app_tick=<number>    : frequency of application (if relevant)   
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_max_app_tick=<number>: max frequency of application (if relevant)
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_comms_tick=<number>  : frequency of comms (if relevant)    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_iterate_Mode=<0,1,2> : set app iterate mode 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_time_warp=<number>   : set moos time warp
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+flags:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_iterate_no_comms     : enable iterate without comms    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_filter_command       : enable command message filtering    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_no_sort_mail         : do not sort mail by time    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_no_comms             : do not start communications    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_quiet                : do not print banner information
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_quit_on_iterate_fail : quit if iterate fails 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_no_colour            : disable colour printing
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+help:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_print_example        : print an example configuration block    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_print_interface      : describe the interface (subscriptions/pubs)
+   
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_print_version        : print the version of moos in play    
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_help                 : print help on moos switches   
+\end_layout
+
+\begin_layout Plain Layout
+
+--help                      : print help on moos messages and custom help
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+To enable common command line parsing call
+\begin_inset Newline newline
+\end_inset
+
+
+\family typewriter
+CMOOSApp::Run(moos_name,mission_file,argc,argv)
+\family default
+ 
+\end_layout
+
+\begin_layout Plain Layout
+or a variant when you start a 
+\family typewriter
+MOOSApp
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+New Command Line Related Functions to Overload
+\end_layout
+
+\begin_layout Standard
+MOOS-V10 adds new virtual functions to 
+\family typewriter
+CMOOSApp
+\family default
+ which can be overloaded to process additional command line parameters if
+ argc, and argv have been passed to your 
+\family typewriter
+CMOOSApp
+\family default
+ derived class.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnProcessCommandLine() 
+\family default
+is called so you can do additional command line parsing
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnPrintExampleAndExit()
+\family default
+ is called when 
+\family typewriter
+--moos_print_example
+\family default
+ is present on the command line.
+ The intent is you use this function to print out an example configuration
+ file block.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnPrintInterfaceAndExit()
+\family default
+ is called when 
+\family typewriter
+--moos_print_interface
+\family default
+ is present on the command line.
+ The intent is you use this function to print out details of the processes
+ subscriptions and publications.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+OnPrintHelpAndExit() 
+\family default
+is called when 
+\family typewriter
+--moos_help
+\family default
+ or
+\family typewriter
+ --help
+\family default
+ is present on the command line.
+ The intent here is that you print out help for additional command line
+ parameters inside this function.
+\end_layout
+
+\begin_layout Subsubsection
+The Publication of CPU load
+\end_layout
+
+\begin_layout Standard
+In a 
+\family typewriter
+CMOOSApp
+\family default
+, every application publishes a status message.
+ You get to add detail to this message by overloading (and within your overload
+ calling) 
+\family typewriter
+CMOOSApp::MakeStatusString().
+ 
+\family default
+The default message now contains CPU load information for that process expressed
+ as a percentage of available cpu grunt.
+ There is a standalone class which can be used to acquire CPU information
+ - it is 
+\family typewriter
+MOOS::ProcInfo.
+\end_layout
+
+\begin_layout Subsection
+MOOSDB Interface Improvements
+\end_layout
+
+\begin_layout Subsubsection
+Command Line
+\end_layout
+
+\begin_layout Standard
+Its pretty dull to only be able to configure processes from a script.
+ 
+\family typewriter
+MOOSDB
+\family default
+ now supports a better command line interface which allows you to set the
+ port it is serving on and various other configurations.
+ All accessed via 
+\family typewriter
+./MOOSDB --help
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+>>pmn@mac  ./MOOSDB --help
+\end_layout
+
+\begin_layout Plain Layout
+
+MOOSDB command line help:
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_file=<string>                  specify mission file name 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_port=<positive_integer>        specify server port number  
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_timewarp= <positive_float>     specify time warp 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_community=<string>             specify community name 
+\end_layout
+
+\begin_layout Plain Layout
+
+--moos_timeout=<positive_float>       specify client timeout 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+--response=<string-list>			  specify client response times <name:response_ms,...>
+\end_layout
+
+\begin_layout Plain Layout
+
+-s (--single_threaded)                run as a single thread 
+\end_layout
+
+\begin_layout Plain Layout
+
+-d (--dns)                            run with dns lookup 
+\end_layout
+
+\begin_layout Plain Layout
+
+--webserver_port=<positive_integer>   run webserver on given port 
+\end_layout
+
+\begin_layout Plain Layout
+
+-h    (--help)                        print help and exit
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Configuring Client Response Times
+\end_layout
+
+\begin_layout Standard
+The MOOSDB has some inbuilt security controls that are designed to prevent
+ a rogue, ill mannered client to hog resources.
+ It seems improper that a random client joining a community can decide to
+ send 10 million messages persecond and because of that, reduce the performance
+ of other clients.
+ On the other hand it seems inappropriate to disallow all clients for all
+ time very rapid performance simply because of a percieved risk.
+ The solution offered in MOOS-V10 is that the MOOSDB by default offers premiums
+ service to all comers 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if they are using the AsyncComms
+\end_layout
+
+\end_inset
+
+ - in other words every client will be serviced as soon as possible and
+ all clients will be have data pushed to them as soon as possible.
+ However the launcher of the 
+\family typewriter
+MOOSDB
+\family default
+ may choose to restrict response times for clients- this has the effect
+ of having each transaction with the DB contain more indvidual messages
+ and prevents rogue clients being disruptive.
+ Even introducing a repsonse time of 10ms can have a marked increase in
+ performance for a very heavily loaded system.
+ It is also possible to control which clients should be throttled and which
+ should not.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=*:20
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=VisualOdometry:10
+\end_layout
+
+\begin_layout Plain Layout
+
+pmn@mac:~$ ./MOOSDB --response=Camera??:10,VisualOdometry:10,*:20
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above, the first example sets all clients to have a minimum reposnse
+ time of 20ms.
+ The second example expicitly sets a client called 
+\family typewriter
+VisualOdometry 
+\family default
+to have a 10ms response while all others have the default of 0ms (instant
+ response).
+ The final example has any client whos name begins with 
+\begin_inset Quotes eld
+\end_inset
+
+Camera
+\begin_inset Quotes erd
+\end_inset
+
+ followed by two characters set to 10ms and 
+\family typewriter
+VisualOdometry
+\family default
+ at 10ms and every other client at 20ms.
+\end_layout
+
+\begin_layout Subsubsection
+Specifying When Clients are Assumed Dead
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+MOOSDB
+\family default
+ has alway been suspicious of clients that unexpectedly go quiet (the comms
+ thread, which operates behind the scenes, stops working) and it will disconnect
+ them.
+ However its pretty annoying if you are debugging an application and because
+ you could not solve you problem in 5 seconds, the DB disconnects your applicati
+on and so differnt behaviour is invoked while debugging (the app will try
+ to reconnect as soon the debugger sets teh application free).
+ In V10, 
+\family typewriter
+MOOSDB
+\family default
+ has the 
+\family typewriter
+--moos_timeout
+\family default
+ option which allows you to specify the time in seconds the DB should tolerate
+ a silent client.
+ Set this to a big number when you are debugging.
+\end_layout
+
+\begin_layout Subsubsection
+Live Network Audit
+\end_layout
+
+\begin_layout Standard
+Sometimes its nice to quickly get a summary of the network performance of
+ the MOOSDB and the clients it supports.
+ The MOOS V10 DB supports a very lightweight way to see how things are going.
+ When the DB starts you'll see it print out something like 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+network performance data published on localhost:9090 listen with "nc -u
+ -lk 9090" 
+\begin_inset Quotes erd
+\end_inset
+
+.
+ 
+\family default
+So if you follow this advice and in a terminal start 
+\family typewriter
+netcat (which is the 
+\begin_inset Quotes eld
+\end_inset
+
+nc
+\begin_inset Quotes erd
+\end_inset
+
+ command)
+\family default
+ listening on port 9090 it will receive UDP packets which contain performance
+ data.
+ Here is an example output - don't be put off by the fact that the client
+ names are actually numbers in this case - that just happens to be the naming
+ scheme this community was running.
+ The network summary packet is sent once a second and contains valid statistics
+ for that last second.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+  client name   pkts in  pkts out  msgs in  msgs out   B/s in  B/s out
+\end_layout
+
+\begin_layout Plain Layout
+
+         0        20        17      20	  20		  1207      1227
+\end_layout
+
+\begin_layout Plain Layout
+
+         1        19        19      19	  19		  1216      2177
+\end_layout
+
+\begin_layout Plain Layout
+
+     total        39        36      39      39		  2423	  3404
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Backwards Compatibility 
+\end_layout
+
+\begin_layout Standard
+MOOS V10 was designed to offer complete backwards compatibility between
+ all versions of MOOS.
+ You should be able to run legacy code with modern clients and old DB's
+ alike.
+ You should be able to run heterogenous communities with any combination
+ of pre V10 and V10 applications.
+ The table below shows the options available for different combinations.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Client
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MOODB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+OK
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Async.
+ Comms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Synch.
+ Comms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Multithreading DB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Single Threaded DB
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pre10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pre10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✗
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✗
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pre10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✗
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pre V10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✗
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✗
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+✔
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Retreating back to the known
+\end_layout
+
+\begin_layout Standard
+It is also possible to force the MOOSDB to behave (ie run almost exactly
+ the same code) as previous versions did.
+ So if you are using the V10 code base but want to return to the good old
+ days the recipe is:
+\end_layout
+
+\begin_layout Enumerate
+Run MOOSDB with the single threaded switch .
+\family typewriter
+/MOOSDB -s
+\end_layout
+
+\begin_layout Enumerate
+Make sure you compile V10 with USE_ASYNC_COMMS=OFF and ENABLE_V10_COMPATIBILITY=
+ON
+\end_layout
+
+\begin_layout Section
+Bench Marks and Testing Tools
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Bench-Marks"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Testing with 
+\family typewriter
+umm
+\end_layout
+
+\begin_layout Standard
+Sometimes its attractive to be able to simply to fire up a program from
+ the command line that subscribes to an publishes messages of your choosing
+ - just to test the MOOS Communications facilities and explore performance.
+ There is a tool called 
+\family typewriter
+umm 
+\family default
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+if you forget this name you may end up saying 
+\begin_inset Quotes eld
+\end_inset
+
+umm...
+\begin_inset Quotes erd
+\end_inset
+
+ as you recall you are looking to 
+\begin_inset Quotes eld
+\end_inset
+
+
+\series bold
+u
+\series default
+ 
+\series bold
+m
+\series default
+onitor 
+\series bold
+m
+\series default
+oos
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ which is designed to achieve just this and it also allows you to simulate
+ applications crashing or operating with high latency networks.
+ It is entirely configurable from the command line and has the following
+ options (in addition to the standard MOOS ones described in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Common-Command-Line"
+
+\end_inset
+
+ which you use to set MOOS parameters to something other than their default
+ value).
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Publication and Subscription  settings:   
+\end_layout
+
+\begin_layout Plain Layout
+
+-s=<string>  : list of subscriptions as var_name@period 
+\end_layout
+
+\begin_layout Plain Layout
+
+-w=<string>  : list of wildcard subscriptions as var_pattern:app_patter@period
+   
+\end_layout
+
+\begin_layout Plain Layout
+
+-p=<string>  : list of publications as var_name[:optional_binary_size]@period
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+--latency    : show latency (time between posting and receiving)   
+\end_layout
+
+\begin_layout Plain Layout
+
+--verbose    : verbose output
+\end_layout
+
+\begin_layout Plain Layout
+
+--bandwidth  : show bandwidth statistics
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+spying helpful settings:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--spy          		: spy on all variables at 1Hz   
+\end_layout
+
+\begin_layout Plain Layout
+
+--spy_all          	: spy on all variables   
+\end_layout
+
+\begin_layout Plain Layout
+
+--spy_proc=<string>    : spy on all variables from a named processes
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Network failure simulation:   
+\end_layout
+
+\begin_layout Plain Layout
+
+--simulate_network_failure=<numeric>   
+\end_layout
+
+\begin_layout Plain Layout
+
+			: enable simulation of network/app failure   
+\end_layout
+
+\begin_layout Plain Layout
+
+--network_failure_prob=<numeric>       
+\end_layout
+
+\begin_layout Plain Layout
+
+			: probability of each DB interaction having network failure [0.1]   
+\end_layout
+
+\begin_layout Plain Layout
+
+--network_failure_time=<numeric>       
+\end_layout
+
+\begin_layout Plain Layout
+
+			: duration of network failure [3s]   
+\end_layout
+
+\begin_layout Plain Layout
+
+--application_failure_prob=<numeric>   
+\end_layout
+
+\begin_layout Plain Layout
+
+			: probability of application failing during DB-communication [0]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Some examples are probably useful at this point.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Publishing Variables with 
+\family typewriter
+umm
+\end_layout
+
+\begin_layout Standard
+So if we wanted to send the variable 
+\family typewriter
+X 
+\family default
+at 20Hz we would type:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm -p=X@20 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and in this case X would be a numeric (MOOS_DOUBLE) variable.
+ Imagine now we wanted to try sending binary data.
+ We would be compelled to write:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm -p=X@20,Y:10000@15 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and this would write Y as 10K of binary data a 15 Hz.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Subscribing with 
+\family typewriter
+umm
+\end_layout
+
+\begin_layout Standard
+We can also subscribe to data
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which subscribes for every issue of X (which we are publishing ourself!)
+ and also Z at to 8 Hz.
+ Note that 
+\begin_inset Formula $0Hz$
+\end_inset
+
+ is overloaded to mean subscribe to everything.
+ The verbose flag simply adds some printing so you can check progress.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Wildcard subscriptions with umm
+\end_layout
+
+\begin_layout Standard
+You can of course also access the wildcard subscription service offered
+ by MOOS 10.
+ This is done via the 
+\family typewriter
+-w
+\family default
+ switch.
+ For example
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm -p=X@20,Y:10000@15 -s=Z@8,X@0 --verbose -w='*:ProcA@0'
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+does all the above and subscribes to all messages from a process called
+ 
+\family typewriter
+\series bold
+ProcA
+\family default
+\series default
+.
+ Note the use of the single quotation to stop the shell interpreting the
+ wilcard '*'.
+ Of course you can build complicated filters this way
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --verbose --bandwidth -w='*:ProcA@1,battery_*:monitor_?'
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which subscribes to everything from ProcA at 1Hz and every issue of any
+ variable which begins with 
+\begin_inset Quotes eld
+\end_inset
+
+battery_
+\begin_inset Quotes erd
+\end_inset
+
+ from any process which whose name begins with 
+\begin_inset Quotes eld
+\end_inset
+
+monitor_
+\begin_inset Quotes erd
+\end_inset
+
+ and ends with any single character.
+ This example also prints out these messages and also bandwidth statistics.
+ You can also use the network failure simulation switches to test MOOS's
+ ability to deal with errant clients.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Tip: 
+\series default
+you can use 
+\family typewriter
+umm
+\family default
+ to watch all MOOS traffic try 
+\family typewriter
+./umm -w='*:*@0' --verbose 
+\family default
+to see everything or 
+\family typewriter
+./umm -w='*:ProcA@1' 
+\family default
+to see everything from 
+\family typewriter
+ProcA
+\family default
+ at 1Hz.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Generic Spying with umm
+\end_layout
+
+\begin_layout Standard
+Building on the above 
+\family typewriter
+umm 
+\family default
+offers some short cuts for spying on the publications of the community at
+ large
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{lstlisting}[style=Bash] 
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --spy
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --spy_all
+\end_layout
+
+\begin_layout Plain Layout
+
+./umm --spy_proc=GPS,INS
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{lstlisting}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+here, in the first example, we have asked to be told about all publications
+ every second.
+ The second example lists each and every publication and the last listens
+ only to publications from the specified processes.
+\end_layout
+
+\begin_layout Subsubsection
+Logging with umm
+\end_layout
+
+\begin_layout Standard
+Sometime its nice to simply be able to capture messages around the community
+ from the command line.
+ 
+\family typewriter
+umm
+\family default
+ can help.
+ By using the 
+\family typewriter
+--log=file_name 
+\family default
+switch all captured messages are written to a a text file.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{5mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Profiling with 
+\family typewriter
+async_test
+\end_layout
+
+\begin_layout Standard
+It is useful to have some statistical sense of performance.
+ Its nice, when you have built V10 to have some sense of latencies and throughpu
+ts.
+ In the directory build directory 
+\family typewriter
+bin 
+\family default
+you will find an executable called 
+\family typewriter
+async_test 
+\family default
+which can be used to do some benchmarking.
+ The program 
+\family typewriter
+async_test
+\family default
+ instantiates a configurable number 
+\begin_inset Formula $2N$
+\end_inset
+
+ of Comms Clients N of which are AsyncCommsClients and the other N of which
+ are pre-V10 clients.
+ Client 
+\begin_inset Formula $C_{j}$
+\end_inset
+
+ is asynchronous if j is even.
+ All clients register with the 
+\family typewriter
+MOOSDB
+\family default
+ under the numerical name 
+\family typewriter
+j (so 
+\begin_inset Quotes eld
+\end_inset
+
+1
+\begin_inset Quotes erd
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+2
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\family default
+etc
+\family typewriter
+)
+\family default
+ Client 
+\begin_inset Formula $C_{0}$
+\end_inset
+
+ is Asynchronous and is charged with regularly posting a variable 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family typewriter
+X
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ or configurable size to the MOOSDB.
+ All clients including 
+\begin_inset Formula $C_{0}$
+\end_inset
+
+ subscribe to 
+\family typewriter
+X.
+ 
+\family default
+The time in milliseconds between
+\begin_inset Formula $C_{0}$
+\end_inset
+
+ sending and client 
+\begin_inset Formula $C_{j}$
+\end_inset
+
+ receiving the data is logged to file 
+\family typewriter
+asynctest.log 
+\family default
+as a plain text matrix :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{ccccc}
+0 & \tau_{1}^{0} & \tau_{2}^{0} & \tau_{3}^{0} & \cdots\\
+1 & \tau_{1}^{1} & \tau_{1}^{1} & \tau_{1}^{1} & \cdots\\
+2 & \tau_{1}^{0} & \tau_{1}^{0} & \tau_{1}^{0} & \cdots\\
+\vdots & \vdots & \vdots & \vdots & \ddots
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $^{j}\tau_{i}$
+\end_inset
+
+ is the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ latency for client 
+\begin_inset Formula $C_{j}$
+\end_inset
+
+ and each row begins with 
+\begin_inset Formula $j$
+\end_inset
+
+ .
+ The test can be run for a configurable number of seconds after which histograms
+ of performance for each kind of client can be produced.
+ The options for 
+\family typewriter
+uDBAsyncTest
+\family default
+ are below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+V10 performance and compatibility testing
+\end_layout
+
+\begin_layout Plain Layout
+
+  -p              : test period in seconds (20 seconds default)
+\end_layout
+
+\begin_layout Plain Layout
+
+  -m              : send test data every m milliseconds (default 100 ms)
+\end_layout
+
+\begin_layout Plain Layout
+
+  -c              : number of clients to instantiate (default 40)
+\end_layout
+
+\begin_layout Plain Layout
+
+  -s              : size of data to send default (default 1024 bytes)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Example Usage:  test for 15 seconds with 20 clients and sending 100K every
+ 50 ms   
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	./async_test  -p=15 -c=20 -m=50 -s=100000
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The figures on the following pages give the probability distributions over
+ message latencies under different conditions (specified in caption).
+ For example Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Histograms-of-latencies-5C-20Hz"
+
+\end_inset
+
+ was generated with 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+./async_test  -p=20 -c=5 -m=50 -s=1000
+\end_layout
+
+\begin_layout Plain Layout
+
+./async_test  -p=20 -c=5 -m=50 -s=10000
+\end_layout
+
+\begin_layout Plain Layout
+
+./async_test  -p=20 -c=5 -m=50 -s=10000
+\end_layout
+
+\begin_layout Plain Layout
+
+./async_test  -p=20 -c=5 -m=50 -s=1000000
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which fires 1K,10K 100K and 1MB messages at 20Hz (every 50ms) to the DB
+ which are immediately routed to 5 clients.
+ This sort of testing not only gives a sense of latencies but also a sense
+ of the total through-put of the system.
+ For the results given here the 
+\family typewriter
+MOOSDB 
+\family default
+was on the same machine as .
+\family typewriter
+/
+\family default
+async_test
+\family typewriter
+ 
+\family default
+which means we are testing logic speed not network speed.
+ The results are gathered on a 2.2GHz Intel Core i7 Mac book Pro running
+ OS X 10.8 and all code was built in Debug (so these results are conservative).
+ Its pretty clear that V10 clients offer between one and two orders of magnitude
+ improvement in performance in terms of latency.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_5_clients_1k_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 1KB messages.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_5_clients_10k_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 10KB messages.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_5_clients_100k_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 100KB messages.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_5_clients_1M_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 1MB messages
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Histograms of latencies between sending and receiving 1KB,10KB, 100KB and
+ 1MB messages.
+ Messages are sent to 5 clients at 20Hz.
+ Top figures are for asynchronous clients lower figures are for pre V10
+ clients with a comms-tick set 20Hz.
+ All cases are using the 
+\family typewriter
+V10 MOOSDB.
+
+\family default
+ As an example of total throughput take the example of sending 100KB messages
+ to 5 clients 20 times a second so 100K*5*20=10MB/s.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Histograms-of-latencies-5C-20Hz"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_50_clients_1k_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 1KB messages.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_50_clients_10k_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 10KB messages.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_50_clients_100k_20Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 100KB messages.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/test_results/asynctest_50_clients_1M_10Hz.pdf
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sending and receiving 1MB messages at 10Hz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Histograms of latencies between sending and receiving 1KB,10KB, 100KB and
+ 1MB messages.
+ Messages are sent to 50 clients at 20Hz unless otherwise stated.
+ Top figures are for asynchronous clients lower figures are for pre V10
+ clients with a comms-tick to 20Hz.
+ All cases are suing the 
+\family typewriter
+V10 MOOSDB.
+ 
+\family default
+As an example of total through put take the example of sending 100KB messages
+ to 50 clients 20 times a second so 100K*50*20=100MB/s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Example Codes
+\end_layout
+
+\begin_layout Subsection
+The simplest example using 
+\family typewriter
+MOOSAsyncCommClient
+\end_layout
+
+\begin_layout Standard
+The simplest (in terms of its proximity to the core communication classes)
+ example of using MOOS-V10 communications is given in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-simplest-example"
+
+\end_inset
+
+.
+ Here a MOOS::MOOSAsyncCommClient is instantiated in its rawest form.
+ It is configured with a Mail and OnConnect callback and set free with a
+ call to Run.
+ Note that in the Connect callback it registers for the data that is being
+ posted once a second in the main() forever loop.
+ Many MOOS users will be used to using CMOOSApp which manages the interaction
+ with the Comms Client Objects however it is instructive to look at the
+ most fundamental example.
+ The CMakeLists.txt file for this example is also given below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient}]{examples/C
+ommsExample/CommsExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={CMakeLists.txt to the simple example above}]{ examples/C
+ommsExample/CMakeLists.txt }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+The Simplest Example using CMOOSApp
+\end_layout
+
+\begin_layout Standard
+We can of course achieve the same thing by subclassing CMOOSApp.
+ The code listing below shows how.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={A simple example using MOOSAsyncCommClient}]{examples/A
+ppExample/AppExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sharing Video Rate Data
+\end_layout
+
+\begin_layout Standard
+Here is a simple example code for sharing video data using the package OpenCV
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+so you will need OpenCV installed on your machine.
+ The CMakeLists.txt file should find this installation and handle everything
+ for you but if you are using mac ports you may need to specify the location
+ of OpenCV in the ccmake gui as Cmake does not look in /opt by default.
+ 
+\end_layout
+
+\end_inset
+
+.
+ The program can be started in one of two ways - once as a server which
+ opens a camera and starts streaming images and as a client which displays
+ them in a window.
+ Note this is not an elegant program - it fixes the images size and does
+ a fairly ugly bit of memory management.
+ It is presented here as a quick and dirty exposition of using MOOS to send
+ data at a moderate rate - its not an example of good use of OpenCV.
+ 
+\end_layout
+
+\begin_layout Itemize
+Start a MOOSDB
+\end_layout
+
+\begin_layout Itemize
+To start a server in a terminal window from the command line whilst in the
+ directory containing the binary type :
+\family typewriter
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+./camera_example -s --moos_name SERVER
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+To start a client from a similar terminal to that above type : 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+./camera_example --moos_name A
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+To start another client, you guess it, open another terminal and try
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+./camera_example --moos_name B
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+If you do the above you should see you camera output appearing in two windows
+ with very little lag.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={Example code to build a camera sharing example}]{exampl
+es/VideoShare/CameraExample.cpp}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstinputlisting[caption={CMakeLists.txt to build the camera sharing example
+ above}]{ examples/VideoShare/CMakeLists.txt }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are several things to note about this example which are worth spotting:
+\end_layout
+
+\begin_layout Enumerate
+The way in which MOOS-V10 can handle command line argument parsing for you
+ using the 
+\family typewriter
+OnParseCommandLine()
+\family default
+ virtual function in 
+\family typewriter
+CMOOSApp
+\family default
+.
+ Also note that the switches like 
+\family typewriter
+--moos_name
+\family default
+ are handled automatically for you.
+ If this is a surprise read section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Common-Command-Line"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+The way in which in this example 
+\family typewriter
+SetIterateMode
+\family default
+ is used to make the application respond quickly to the reception of mail.
+\end_layout
+
+\end_body
+\end_document

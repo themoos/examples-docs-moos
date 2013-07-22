@@ -1,4 +1,4 @@
-set(PROJECTNAME MOOSTutorial)
+set(PROJECTNAME MOOSCommsExamples)
 
 project(${PROJECTNAME})
 

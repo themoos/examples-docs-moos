@@ -6,13 +6,16 @@ bool OnConnect(void * pParam){
 	return true;
 }
 
+//this is a mail callback - it is called as soon as mail arrives
 bool OnMail(void *pParam){
 	CMOOSCommClient* pC = reinterpret_cast<CMOOSCommClient*>(pParam);
+
+	//grab all the held mail
 	MOOSMSG_LIST M;
 	pC->Fetch(M); //get the mail
 	MOOSMSG_LIST::iterator q; //process it
 	for(q=M.begin();q!=M.end();q++){
-		q->Trace();
+		q->Trace();//print it
 	}
 	return true;
 }

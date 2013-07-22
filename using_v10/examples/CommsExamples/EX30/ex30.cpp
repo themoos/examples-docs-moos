@@ -1,5 +1,6 @@
 /*
  * A simple example showing how to use a comms client
+ * and the command line parser
  */
 #include "MOOS/libMOOS/Comms/MOOSAsyncCommClient.h"
 #include "MOOS/libMOOS/Utils/CommandLineParser.h"

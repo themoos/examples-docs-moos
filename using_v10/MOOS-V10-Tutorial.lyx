@@ -2899,7 +2899,8 @@ MOOSDB
 \family default
  it should connect to is running on localhost (the same machine) and on
  port 9000.
- 
+ Don't forget to start a MOOSDB process on the command line to make this
+ example do something oher than wait for a DB Connection.
 \end_layout
 
 \begin_layout Standard
@@ -2936,7 +2937,7 @@ Hello
 \family default
  Then the loop fetches any and all incoming messages (since the last loop
  iteration) by calling Fetch.
- All mesages are now contained in a MOOSMSG_LIST which is simply a typedef
+ All messages are now contained in a MOOSMSG_LIST which is simply a typedef
  for a 
 \family typewriter
 std::list
@@ -2947,7 +2948,7 @@ std::strings
 \family default
 .
  We then iterate over each member printing its contents.
- The only other part t pay attention to is what happens in the 
+ The only other part to pay attention to is what happens in the 
 \family typewriter
 OnConnect
 \family default

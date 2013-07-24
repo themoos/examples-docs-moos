@@ -44,7 +44,7 @@ class ExampleApp : public CMOOSApp
 			if(q->GetKey()=="ex1010-pong"){
 				double latency =(MOOSLocalTime()-q->GetDouble())/2;
 				mean_latency_+= latency;
-				if(count_)//this simply removes case of stale data in DB
+				if(count_>2)//this simply removes case of stale data in DB
 					max_latency_ = std::max(latency,max_latency_);
 				if(count_<burstsize_-1)
 					Notify("ex1010-ping",MOOSLocalTime());

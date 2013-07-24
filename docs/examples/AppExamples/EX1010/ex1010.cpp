@@ -27,7 +27,7 @@ class ExampleApp : public CMOOSApp
 	}
 
 	bool OnStartUp(){
-		count_=0;mean_latency_=0.0;
+		count_=0;mean_latency_=0.0;max_latency_=0.0;
 		SetAppFreq(2,0.0);
 		return SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
 	}
@@ -42,7 +42,10 @@ class ExampleApp : public CMOOSApp
 				Notify("ex1010-pong",q->GetDouble());
 
 			if(q->GetKey()=="ex1010-pong"){
-				mean_latency_+= (MOOSLocalTime()-q->GetDouble())/2;
+				double latency =(MOOSLocalTime()-q->GetDouble())/2;
+				mean_latency_+= latency;
+				if(count_)//this simply removes case of stale data in DB
+					max_latency_ = std::max(latency,max_latency_);
 				if(count_<burstsize_-1)
 					Notify("ex1010-ping",MOOSLocalTime());
 			}
@@ -62,8 +65,9 @@ class ExampleApp : public CMOOSApp
 	{
 		if(pinger_)
 		{
-			std::cout<<"ping-ponged "<<count_<<" messages ("<<2*count_<<") messages exchanged";
-			std::cout<<"\n->Mean latency of "<<mean_latency_*1000000.0/count_<<" us\n";
+			std::cout<<"ping-ponged "<<count_<<" messages ("<<2*count_<<") messages exchanged\n";
+			std::cout<<" mean latency of "<<mean_latency_*1000000.0/count_<<" us\n";
+			std::cout<<" max  latency of "<<max_latency_*1000000.0<<" us\n";
 
 			//excite the system once in while...
 			Notify("ex1010-ping",MOOSLocalTime());
@@ -77,6 +81,7 @@ class ExampleApp : public CMOOSApp
 	unsigned int count_;
 	unsigned int burstsize_;
 	double mean_latency_;
+	double max_latency_;
 };
 
 int main(int argc, char * argv[])

@@ -1,6 +1,11 @@
 #include "opencv2/opencv.hpp"
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
+
+using namespace cv;
 class CameraApp : public CMOOSApp
 {
 public:
@@ -8,9 +13,16 @@ public:
 	{
 		if(server_){
 			vc_>>capture_frame_;
-			cv::cvtColor(capture_frame_, bw_image_, CV_BGR2GRAY);
-			cv::resize(bw_image_, image_, image_.size(), 0, 0, cv::INTER_NEAREST);
-			Notify("Image",(void*)image_.data,image_.size().area(),MOOSLocalTime());
+			if(capture_frame_.data!=NULL)
+			{
+				cv::cvtColor(capture_frame_, bw_image_, COLOR_BGR2GRAY);
+				cv::resize(bw_image_, image_, image_.size(), 0, 0, cv::INTER_NEAREST);
+				Notify("Image",(void*)image_.data,image_.size().area(),MOOSLocalTime());
+			}
+			else
+			{
+				std::cerr<<"no image read from camera..\n";
+			}
 		}
 		else{
 	        cv::imshow("display", image_);
@@ -24,10 +36,19 @@ public:
 		SetIterateMode(COMMS_DRIVEN_ITERATE_AND_MAIL);
 
 		image_ = cv::Mat(378,512,CV_8UC1);
+		bw_image_ = cv::Mat(378,512,CV_8UC1);
 
 		if(server_){
 			if(!vc_.open(0))
+			{
+				std::cerr<<"camera open FAIL\n";
+
 				return false;
+			}
+			else
+				std::cerr<<"camera opened OK\n";
+
+			//vc_.set(cv::CAP_PROP_SATURATION,0);
 		}
 		else{
 		    cv::namedWindow("display",1);
@@ -39,12 +60,12 @@ public:
 	{
 		PrintDefaultCommandLineSwitches();
 		std::cout<<"\napplication specific help:\n";
-		std::cout<<"  -s            : be a video server grabs and sends images (no window)\n";
+		std::cout<<"  --serve            : be a video server grabs and sends images (no window)\n";
 		exit(0);
 	}
 	void OnPrintExampleAndExit()
 	{
-		std::cout<<" ./video_share -s    \n";
+		std::cout<<" ./video_share --serve    \n";
 		std::cout<<" and on another terminal..\n";
 		std::cout<<" ./video_share       \n";
 		exit(0);
@@ -52,7 +73,7 @@ public:
 
 	bool OnProcessCommandLine()
 	{
-		server_=m_CommandLineParser.GetFlag("-s");
+		server_=m_CommandLineParser.GetFlag("--serve");
 
 		return true;
 	}

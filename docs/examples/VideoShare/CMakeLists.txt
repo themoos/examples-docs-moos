@@ -24,3 +24,8 @@ add_executable(${EXECNAME} ${SRCS} )
 
 #and link thus...
 target_link_libraries(${EXECNAME} ${MOOS_LIBRARIES} ${MOOS_DEPEND_LIBRARIES} ${OpenCV_LIBS})
+
+#install it
+install(TARGETS ${EXECNAME}
+  RUNTIME DESTINATION bin
+)

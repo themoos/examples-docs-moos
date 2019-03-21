@@ -66,8 +66,8 @@ int main(int argc, char * argv[]){
 	//first parameter is the channel nick-name, then the function
 	//to call, then a parameter we want passed when callback is
 	//invoked
-	Comms.AddMessageCallback("callback_X","X",funcX,NULL);
-	Comms.AddMessageCallback("callback_Y","Y",funcY,NULL);
+	Comms.AddMessageRouteToActiveQueue("callback_X","X",funcX,NULL);
+	Comms.AddMessageRouteToActiveQueue("callback_Y","Y",funcY,NULL);
 
 	//start the comms running
 	Comms.Run(db_host,db_port,my_name);

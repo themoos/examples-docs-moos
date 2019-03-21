@@ -61,17 +61,17 @@ int main(int argc, char * argv[]){
 	//configure the comms
 	MOOS::MOOSAsyncCommClient Comms1;
 	Comms1.SetOnConnectCallBack(OnConnect1,&Comms1);
-	Comms1.AddMessageCallback("default","*",DefaultMail,&Comms1);
+	Comms1.AddMessageRouteToActiveQueue("default","*",DefaultMail,&Comms1);
 	Comms1.Run(db_host,db_port,"C-"+my_name+"-1");
 
 	MOOS::MOOSAsyncCommClient Comms2;
 	Comms2.SetOnConnectCallBack(OnConnect2,&Comms2);
-	Comms2.AddMessageCallback("default","*",DefaultMail,&Comms2);
+	Comms2.AddMessageRouteToActiveQueue("default","*",DefaultMail,&Comms2);
 	Comms2.Run(db_host,db_port,"C-"+my_name+"-2");
 
 	MOOS::MOOSAsyncCommClient Comms3;
 	Comms3.SetOnConnectCallBack(OnConnect3,&Comms3);
-	Comms3.AddMessageCallback("default","*",DefaultMail,&Comms3);
+	Comms3.AddMessageRouteToActiveQueue("default","*",DefaultMail,&Comms3);
 	Comms3.Run(db_host,db_port,"C-"+my_name+"-3");
 
 	//for ever loop sending data
